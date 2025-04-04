@@ -1,0 +1,54 @@
+Lab 2 Group 2
+
+  1.  Availability for meeting expectations:
+    CONCESSION: Primarily Fridays
+    Zach Best Times: Monday and Friday
+    Evan Best Times: Monday (evenings) and Friday (after 10am)
+    Michael Best Times: Thursday and Friday
+    Aisha Best Times: Mondays and Wednesdays
+    Alex Times: Monday: All Morning until 1pm.  Tuesday: 12pm to 2:30pm, Wednesday: All Morning until 1pm. Thursday: After 2:30pm Friday: Morning until 1pm
+    Jack:Wednesdays,Friday, weekends
+  2.  Response time to communication expectations (MS Teams)
+    Zach: Within a day or two
+    Evan: Within a day or two
+    Michael: Within a day or two
+    Aisha: Within a day or two
+  3.  Definition of done: when is a task complete? (hint: "I'm done with that but I didn't check it in to github" is not done.)
+    a. When a backlog item is committed to the main branch
+      I. Backlog item is ready for merge when:
+        * item fulfills requirements set by relevant user story
+        * all PR comments were addressed (changes made, refusals explained, etc)\
+    b. item passes all tests
+    c. item meets acceptance criteria
+
+  4.  Scrum meeting format/frequency and distribution of documentation tasks (meeting minutes, updating task board)
+    45 mins at most
+    Mondays if in-person is needed
+    Regular meetings on Fridays 3:30 via MS Teams
+    Semi-Daily Standups @ 7pm Monday & Wednesday
+
+
+  5.  Procedure for adopting policies (e.g. code style, code check-in steps, documentation updates)
+    a. Initial Policies:
+      I.   names are in snake_case b/c we're using python
+      II.  type-hinting [https://docs.python.org/3/library/typing.html]
+      III. helper names should be long and descriptive; primary functions should be concise and supported by documentation
+      IV.  avoid acronyms if possible
+      V.   HTML: include file and relevant line for python variables as an inline comment
+    b. Process:
+      group vote
+
+  6.   Procedure for handling a member who is not meeting expectations
+    a. written warning
+    b. team meeting about it
+    c. if failure to meet expectations involve code knowledge, sitdowns with the team or with a tutor will be had.
+
+
+
+    Signatures: each member must sign their name by typing their name at the bottom of the document.
+Zach Fornero
+Aisha Ali
+Evan Jamison
+Michael Perez
+Alex Espino
+Jack Samson
