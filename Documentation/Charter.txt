@@ -42,10 +42,10 @@ Lab 2 Group 2
     a. Minor Violations
         - missing a meeting
         - missing a deadline
-        - Making an unrecoverable
+        - Making an unrecoverable change
     b. Major Violations
-        - Malicious behavior
-        - Getting 3-4 minor violations
+        - Malicious behavior (hostile conduct, disruptive changes to others' work without communication, making changes that reverses project progress)
+        - Getting 4 minor violations
     c. Once a major violation occurs, instructor will be contacted
     
 
