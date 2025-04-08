@@ -39,9 +39,15 @@ Lab 2 Group 2
       group vote
 
   6.   Procedure for handling a member who is not meeting expectations
-    a. written warning
-    b. team meeting about it
-    c. if failure to meet expectations involve code knowledge, sitdowns with the team or with a tutor will be had.
+    a. Minor Violations
+        - missing a meeting
+        - missing a deadline
+        - Making an unrecoverable
+    b. Major Violations
+        - Malicious behavior
+        - Getting 3-4 minor violations
+    c. Once a major violation occurs, instructor will be contacted
+    
 
 
 
