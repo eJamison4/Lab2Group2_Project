@@ -1,10 +1,75 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+<style>
+    body{
+        display: flex;
+        background-color:white;
+        width: 100%;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+    }
+    .main_box{
+        padding: 20px;
+        display:flex;
+        margin-top: -20%;
+        flex-direction: column;
+        max-width:400px;
+        min-width:300px;
+        background-color:#e4e4e4;
+    }
+    input[type=text], select {
+        width: 90%;
+        padding: 6px 0;
+        margin: 0 4% 20px 4%;
+        display: inline-block;
+        border: 2px solid #ccc;
+        border-radius: 2px;
+        box-sizing: border-box;
+    }
+    label{
+        font-family: Arial;
+        margin-left: 5%;
+    }
+    input[type=submit]{
+        padding: 5px 10px;
+        border-radius: 5px;
+        background-color: whitesmoke;
+        cursor:pointer;
+    }
+    input[type=submit]:hover{
+        background-color: #e4e4e4;
+    }
+    img {
+        max-width: 233px;
+        align-self: center;
+    }
+    .spacer{height: 30px;}
+</style>
 <head>
     <meta charset="UTF-8">
     <title>Login; UWM TA Scheduling Tool</title>
 </head>
 <body>
-
+    <div class="main_box">
+        <img alt="UWM TA Scheduler Tool Logo" src="{% static 'images/UWM_TA_sched_logo.png' %}">
+        <div class="spacer"></div>
+        <div class="spacer"></div>
+        <form method="post" action="/">
+            {% csrf_token %}
+            <label for="username_entry">Username:</label>
+            <input id="username_entry" name="username" type="text"/>
+            <label for="password_entry">Password:</label>
+            <input id="password_entry" name="password" type="text"/>
+            <div class="spacer"></div>
+            <div style="text-align: center">
+                <input type="submit" value="login"/>
+            </div>
+        </form>
+        <div style="color:red; text-align: center; margin-top: 30px">
+        {{ message }}
+        </div>
+    </div>
 </body>
 </html>
