@@ -4,19 +4,28 @@ class CourseFeatures:
 
     @staticmethod
     def create_course(self, courseName):
-        pass
+        course = models.Course.objects.create(name=courseName)
+        return course
 
     @staticmethod
     def create_section(self, courseForeignKey, sectionData):
-        pass
+        section = models.Section.objects.create(courseForeignKey=courseForeignKey, sectionTime=sectionData)
+        return section
 
     @staticmethod
     def create_lab(self, courseForeignKey, labData):
+        lab = models.Lab.objects.create(courseForeignKey=courseForeignKey, labTime=labData)
         pass
 
     @staticmethod
     def delete_course(self, courseKey):
-        pass
+        try:
+            course = models.Course.objects.get(key=courseKey)
+            course.delete()
+            return True
+        except models.Course.DoesNotExist:
+            return False
+
 
     @staticmethod
     def delete_section(self, sectionKey):
