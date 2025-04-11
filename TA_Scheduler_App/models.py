@@ -10,8 +10,11 @@ class User(models.Model):
     phoneNumber = models.IntegerField()
     firstName = models.CharField(max_length=20)
     lastName = models.CharField(max_length=20)
+    #optional office hours
+    officeHours = models.CharField(max_length=20, null=True, blank=True)
 
     timeCreated = models.DateTimeField(auto_now_add=True)
+    #have admin be 2 teacher 1 and TA 0
     accountType = models.IntegerField(default=0)
 
 
@@ -20,15 +23,18 @@ class Course(models.Model):
 
 
 class Section(models.Model):
+    #not sure how to format the times
+    # startTime, endTime, daysOfWeek?
     sectionTime = models.CharField(max_length=20)
     courseForeignKey = models.ForeignKey(Course, on_delete=models.CASCADE)
 
-class lab(models.Model):
+class Lab(models.Model):
     labTime = models.CharField(max_length=20)
     courseForeignKey = models.ForeignKey(Course, on_delete=models.CASCADE)
 
-class assignment(models.Model):
+class Assignment(models.Model):
     userID = models.ForeignKey(User, on_delete=models.CASCADE)
     sectionID = models.ForeignKey(Section, on_delete=models.CASCADE)
-    labID = models.ForeignKey(lab, on_delete=models.CASCADE,blank=True,null=True)
+    labID = models.ForeignKey(Lab, on_delete=models.CASCADE,blank=True,null=True)
+    #set to 1 for grading
     graderStatus = models.IntegerField(default=0)
