@@ -1,21 +1,26 @@
 from django.test import TestCase
 from django.db import models
 
+#Takes all functions from AccountFeatures to test
 from TA_Scheduler_App.account_features import AccountFeatures
+#Takes the models to test
 from TA_Scheduler_App.models import User
 
 
 
 # Create your tests here.
 class TestAccountFeatures(TestCase):
+    #sets up the service field to AccountFeatures
     def setUp(self):
         self.service = AccountFeatures()
 
+    #tests creation of one account
     def test_account_creation(self):
         data = {'username': 'Teach', 'password': 'pass123', 'userEmail': 'example@email.com', 'phoneNumber': 1114449999,
                 'firstName': 'John', 'lastName': 'Doe'}
         user = self.service.create_user(data['username'], data['password'], data['userEmail'], data['firstName'], data['lastName'])
 
+        #All data sent
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(user.username, 'Teach')
         self.assertEqual(user.password, 'pass123')
@@ -27,7 +32,7 @@ class TestAccountFeatures(TestCase):
         data = {'username': 'Teach', 'password': 'pass123', 'userEmail': 'example@email.com', 'phoneNumber': 1114449999,
                 'firstName': 'John', 'lastName': 'Doe'}
         user = self.service.create_user(data['username'], data['password'], data['userEmail'], data['firstName'],
-                                        data['lastName'], phoneNumber= data['phoneNumber'])
+                                        data['lastName'], phone_number= data['phoneNumber'])
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(user.username, 'Teach')
         self.assertEqual(user.password, 'pass123')
@@ -38,7 +43,7 @@ class TestAccountFeatures(TestCase):
         data = {'username': 'Teach', 'password': 'pass123', 'userEmail': 'example@email.com', 'phoneNumber': 1114449999,
                 'firstName': 'John', 'lastName': 'Doe', 'accountType': 2}
         user = self.service.create_user(data['username'], data['password'], data['userEmail'], data['firstName'],
-                                        data['lastName'], accountType=data['accountType'])
+                                        data['lastName'], account_type=data['accountType'])
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(user.username, 'Teach')
         self.assertEqual(user.password, 'pass123')
@@ -50,7 +55,7 @@ class TestAccountFeatures(TestCase):
         data = {'username': 'Teach', 'password': 'pass123', 'userEmail': 'example@email.com', 'phoneNumber': 1114449999,
                 'firstName': 'John', 'lastName': 'Doe'}
         user = self.service.create_user(data['username'], data['password'], data['userEmail'], data['firstName'],
-                                        data['lastName'], phoneNumber=data['phoneNumber'])
+                                        data['lastName'], phone_number=data['phoneNumber'])
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(user.username, 'Teach')
         self.assertEqual(user.password, 'pass123')
@@ -65,7 +70,7 @@ class TestAccountFeatures(TestCase):
         data = {'username': 'Teach', 'password': 'pass123', 'userEmail': 'example@email.com', 'phoneNumber': 1114449999,
                 'firstName': 'John', 'lastName': 'Doe'}
         user = self.service.create_user(data['username'], data['password'], data['userEmail'], data['firstName'],
-                                        data['lastName'], phoneNumber=data['phoneNumber'])
+                                        data['lastName'], phone_number=data['phoneNumber'])
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(user.username, 'Teach')
         self.assertEqual(user.password, 'pass123')
@@ -75,7 +80,7 @@ class TestAccountFeatures(TestCase):
 
         userID = user.pk
 
-        user = self.service.edit_account(userID, username="Edited", phoneNumber=2223337777)
+        user = self.service.edit_account(userID, username="Edited", phone_number=2223337777)
 
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(user.username, 'Edited') #Changed
@@ -88,11 +93,11 @@ class TestAccountFeatures(TestCase):
         data = {'username': 'Teach', 'password': 'pass123', 'userEmail': 'example@email.com', 'phoneNumber': 1114449999,
                 'firstName': 'John', 'lastName': 'Doe'}
         user = self.service.create_user(data['username'], data['password'], data['userEmail'], data['firstName'],
-                                        data['lastName'], phoneNumber=data['phoneNumber'])
+                                        data['lastName'], phone_number=data['phoneNumber'])
         data2 = {'username': 'Coach', 'password': '123word', 'userEmail': 'example@hotmail.com', 'phoneNumber': 3335550000,
                 'firstName': 'Jack', 'lastName': 'Someone'}
         user2 = self.service.create_user(data2['username'], data2['password'], data2['userEmail'], data2['firstName'],
-                                        data2['lastName'], phoneNumber=data2['phoneNumber'], accountType=2)
+                                        data2['lastName'], phone_number=data2['phoneNumber'], account_type=2)
 
         self.assertEqual(User.objects.count(), 2)
         self.assertEqual(user.username, 'Teach')
