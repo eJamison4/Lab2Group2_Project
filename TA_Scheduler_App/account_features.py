@@ -11,12 +11,12 @@ class AccountFeatures:
     #Account Type and phone number can be left blank and default to 0
     @staticmethod
     def create_user(username : str, password : str, user_email: str,
-                    first_name: str, last_name: str, account_type: int= 0, phone_number: int =0):
+                    first_name: str, last_name: str, home_address: str, account_type: int= 0, phone_number: int =0):
         #Account creation happens here
         user = User.objects.create(username=username,
                                    password=password, userEmail=user_email,
                                    phoneNumber=phone_number, firstName=first_name,
-                                   lastName=last_name, accountType=account_type)
+                                   lastName=last_name, homeAddress = home_address, accountType=account_type)
         #new account is returned
         return user
 
@@ -41,7 +41,8 @@ class AccountFeatures:
     # ex: edit_account(username='some fake name')
     @staticmethod
     def edit_account(user_id, username: str ="", password: str ="", user_email: str="",
-                     phone_number: int =None, first_name: str="", last_name: str ="", account_type: int =None):
+                     phone_number: int =None, first_name: str="", last_name: str ="", account_type: int =None
+                     , home_address: str = ""):
 
         try:
             #The primary key for the account is used to retrieve the appropriate account
@@ -64,6 +65,8 @@ class AccountFeatures:
                 user.lastName = last_name
             if account_type is not None:
                 user.accountType = account_type
+            if home_address is not "":
+                user.homeAddress = home_address
 
             #saves the current user instance
             user.save()
