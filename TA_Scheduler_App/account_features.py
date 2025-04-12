@@ -8,6 +8,7 @@ from TA_Scheduler_App.models import User
 class AccountFeatures:
 
     #Function that creates account.  Takes in the necessary data to create account.
+    #Each account is required to have a username, password, email, first name, last name, and home address to start
     #Account Type and phone number can be left blank and default to 0
     @staticmethod
     def create_user(username : str, password : str, user_email: str,
@@ -21,6 +22,7 @@ class AccountFeatures:
         return user
 
     #Function that deletes an existing account.  The user id of the account has to be used to find the account
+    #The user id is the primary key of the User object
     @staticmethod
     def  delete_account(user_id):
         #The function either returns true if the account is found and deleted
