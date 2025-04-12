@@ -29,23 +29,27 @@ class AccountFeatures:
             user = User.objects.get(pk=user_id)
             user.delete()
             return True
+        #Error check if the account does not exist, likely not needed
         except User.DoesNotExist:
             return False
 
-    #edits an existing account, allowing any user fields to be changed at a time.
+    #edits an existing account, allowing any amount of user fields to be changed at a time.
     #Every parameter for this function is entirely optional
-    #On return, the function will provide the updated user object to
+    #The function returns the updated user account
     #user_id should be a primary key
+    #When calling this function, it is recommended to specify the parameter being passed
+    # ex: edit_account(username='some fake name')
     @staticmethod
     def edit_account(user_id, username: str ="", password: str ="", user_email: str="",
                      phone_number: int =None, first_name: str="", last_name: str ="", account_type: int =None):
 
         try:
-            #The primary key from the account is used to retrieve the appropriate account
+            #The primary key for the account is used to retrieve the appropriate account
             user = User.objects.get(pk = user_id)
 
             #This chain of if statements check which fields is desired to change
-            #For example, if
+            #For example, if no new username is given,
+            # it skips that field and focuses on other fields that need to be changed
             if username is not "":
                 user.username = username
             if password is not "":
@@ -61,7 +65,9 @@ class AccountFeatures:
             if account_type is not None:
                 user.accountType = account_type
 
+            #saves the current user instance
             user.save()
             return user
+        #Error check if the account does not exist, likely not needed
         except User.DoesNotExist:
             return None
