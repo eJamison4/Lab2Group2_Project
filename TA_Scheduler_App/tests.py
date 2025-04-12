@@ -1,10 +1,10 @@
+#Imports the TestCase framework.  Allows each test case to act isolated from each other.
 from django.test import TestCase
-from django.db import models
 
 #Takes all functions from AccountFeatures to test
 from TA_Scheduler_App.account_features import AccountFeatures
 #Imports the User model from the models file.
-#This allows manual creation of users without using account_features
+#This allows manual creation of user accounts without using account_features
 from TA_Scheduler_App.models import User
 
 
