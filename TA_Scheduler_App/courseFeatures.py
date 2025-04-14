@@ -50,14 +50,41 @@ class CourseFeatures:
             return False
 
     @staticmethod
-    def edit_course(self, courseKey):
-        pass
+    def edit_course(self, courseKey, newCourseName=None):
+        try:
+            course = models.Course.objects.get(key=courseKey)
+        except models.Course.DoesNotExist:
+            return False
+
+        if newCourseName is not None:
+            course.courseName = newCourseName
+            return True
+        return False
 
     @staticmethod
-    def edit_section(self, sectionKey):
-        pass
+    def edit_section(self, sectionKey, newSectionTime=None):
+        try:
+            section = models.Section.objects.get(key=sectionKey)
+        except models.Section.DoesNotExist:
+            return False
+
+        if newSectionTime is not None:
+            section.sectionTime = newSectionTime
+            return True
+
+        return False
+
 
     @staticmethod
-    def edit_lab(self, labKey):
-        pass
+    def edit_lab(self, labKey, newLabTime=None):
+        try:
+            lab = models.Lab.objects.get(key=labKey)
+        except models.Lab.DoesNotExist:
+            return False
+
+        if newLabTime is not None:
+            lab.labTime = newLabTime
+            return True
+
+        return False
 
