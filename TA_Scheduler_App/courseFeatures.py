@@ -58,6 +58,7 @@ class CourseFeatures:
 
         if newCourseName is not None:
             course.courseName = newCourseName
+            course.save()
             return True
         return False
 
@@ -70,6 +71,7 @@ class CourseFeatures:
 
         if newSectionTime is not None:
             section.sectionTime = newSectionTime
+            section.save()
             return True
 
         return False
@@ -84,6 +86,7 @@ class CourseFeatures:
 
         if newLabTime is not None:
             lab.labTime = newLabTime
+            lab.save()
             return True
 
         return False
