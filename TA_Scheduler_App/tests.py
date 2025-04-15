@@ -68,8 +68,9 @@ class testCourseFeatures(TestCase):
 
     def testCourseUpdateNoArgument(self):
         course = self.service.create_course(self,courseName="yugioh class")
+        course = self.service.edit_course(self,courseKey=course.pk)
 
-        self.assertIsNone(self.service.edit_course(self,courseKey=course.pk))
+        self.assertNotEqual(course.courseName, '')
 
     def testCourseUpdate(self):
         course = self.service.create_course(self,courseName="yugioh class")
@@ -79,9 +80,32 @@ class testCourseFeatures(TestCase):
         self.assertEqual(course.courseName, 'MTG class')
 
     def testSectionUpdate(self):
-        pass
+        course = self.service.create_course(self,courseName="yugioh class")
+        section = self.service.create_section(self,course,'time to duel')
+
+        section = self.service.edit_section(self,sectionKey=section.pk, newSectionTime='time to MTG')
+
+        self.assertEqual(section.sectionTime, 'time to MTG')
+
+    def testSectionUpdateNoArgument(self):
+        course = self.service.create_course(self,courseName="yugioh class")
+        section = self.service.create_section(self,course,'time to duel')
+
+        section = self.service.edit_section(self,sectionKey=section.pk)
+
+        self.assertNotEqual(section.sectionTime, '')
 
     def testLabUpdate(self):
-        pass
+        course = self.service.create_course(self,courseName="yugioh class")
+        lab = self.service.create_lab(self,course,'time to duel')
+        lab = self.service.edit_lab(self,labKey=lab.pk,newLabTime='time to MTG')
+        self.assertEqual(lab.labTime, 'time to MTG')
 
-    pass
+    def testLabUpdateNoArgument(self):
+        course = self.service.create_course(self,courseName="yugioh class")
+        lab = self.service.create_lab(self,course,'time to duel')
+
+        lab = self.service.edit_lab(self,labKey=lab.pk)
+
+        self.assertNotEqual(lab.labTime, '')
+

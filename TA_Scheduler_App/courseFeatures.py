@@ -51,43 +51,32 @@ class CourseFeatures:
 
     @staticmethod
     def edit_course(self, courseKey, newCourseName=""):
-        try:
-            course = Course.objects.get(pk=courseKey)
-        except Course.DoesNotExist:
-            return None
+        course = Course.objects.get(pk=courseKey)
 
-        if newCourseName is not '':
+        if newCourseName is not '' and newCourseName is not None:
             course.courseName = newCourseName
             course.save()
-            return course
-        return None
+
+        return course
 
     @staticmethod
     def edit_section(self, sectionKey, newSectionTime=None):
-        try:
-            section = Section.objects.get(pk=sectionKey)
-        except Section.DoesNotExist:
-            return False
+        section = Section.objects.get(pk=sectionKey)
 
-        if newSectionTime is not None:
+        if newSectionTime is not None and newSectionTime is not '':
             section.sectionTime = newSectionTime
             section.save()
-            return True
 
-        return False
+        return section
 
 
     @staticmethod
     def edit_lab(self, labKey, newLabTime=None):
-        try:
-            lab = Lab.objects.get(pk=labKey)
-        except Lab.DoesNotExist:
-            return False
+        lab = Lab.objects.get(pk=labKey)
 
-        if newLabTime is not None:
+        if newLabTime is not None and newLabTime is not '' :
             lab.labTime = newLabTime
             lab.save()
-            return True
 
-        return False
+        return lab
 
