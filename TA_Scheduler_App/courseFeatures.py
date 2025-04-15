@@ -4,7 +4,7 @@ class CourseFeatures:
 
     @staticmethod
     def create_course(self, courseName):
-        course = Course.objects.create(name=courseName)
+        course = Course.objects.create(courseName=courseName)
         course.save()
         return course
 
@@ -18,12 +18,12 @@ class CourseFeatures:
     def create_lab(self, courseForeignKey, labData):
         lab = Lab.objects.create(courseForeignKey=courseForeignKey, labTime=labData)
         lab.save()
-        pass
+        return lab
 
     @staticmethod
     def delete_course(self, courseKey):
         try:
-            course = Course.objects.get(key=courseKey)
+            course = Course.objects.get(pk=courseKey)
             course.delete()
             return True
         except Course.DoesNotExist:
@@ -33,7 +33,7 @@ class CourseFeatures:
     @staticmethod
     def delete_section(self, sectionKey):
         try:
-            section = Section.objects.get(key=sectionKey)
+            section = Section.objects.get(pk=sectionKey)
             section.delete()
             return True
         except Section.DoesNotExist:
@@ -42,7 +42,7 @@ class CourseFeatures:
     @staticmethod
     def delete_lab(self, labKey):
         try:
-            lab = Lab.objects.get(key=labKey)
+            lab = Lab.objects.get(pk=labKey)
             lab.delete()
             return True
 
@@ -50,22 +50,22 @@ class CourseFeatures:
             return False
 
     @staticmethod
-    def edit_course(self, courseKey, newCourseName=None):
+    def edit_course(self, courseKey, newCourseName=""):
         try:
-            course = Course.objects.get(key=courseKey)
+            course = Course.objects.get(pk=courseKey)
         except Course.DoesNotExist:
-            return False
+            return None
 
-        if newCourseName is not None:
+        if newCourseName is not '':
             course.courseName = newCourseName
             course.save()
-            return True
-        return False
+            return course
+        return None
 
     @staticmethod
     def edit_section(self, sectionKey, newSectionTime=None):
         try:
-            section = Section.objects.get(key=sectionKey)
+            section = Section.objects.get(pk=sectionKey)
         except Section.DoesNotExist:
             return False
 
@@ -80,7 +80,7 @@ class CourseFeatures:
     @staticmethod
     def edit_lab(self, labKey, newLabTime=None):
         try:
-            lab = Lab.objects.get(key=labKey)
+            lab = Lab.objects.get(pk=labKey)
         except Lab.DoesNotExist:
             return False
 
