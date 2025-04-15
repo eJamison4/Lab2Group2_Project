@@ -1,10 +1,11 @@
-import models
+from django.db import models
+import TA_Scheduler_App.models
 
 class CourseFeatures:
 
     @staticmethod
     def create_course(self, courseName):
-        course = models.Course.objects.create(name=courseName)
+        course = models.Course.objects.create_course(name=courseName)
         course.save()
         return course
 
