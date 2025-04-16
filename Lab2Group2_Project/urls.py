@@ -16,9 +16,10 @@ Including another URLconf
 """
 # from django.contrib import admin
 from django.urls import path
-from TA_Scheduler_App.views import Login
+from TA_Scheduler_App.views import Login, Account
 
 urlpatterns = [
     # path("admin/", admin.site.urls),
     path('', Login.as_view()),
+    path("accounts.html", Account.as_view())
 ]

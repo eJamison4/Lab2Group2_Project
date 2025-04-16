@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    body{
+        display: flex;
+        background-color: white;
+        width: 100%;
+        min-height: 100vh;
+    }
+    .main_box{
+        margin: 2%;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        background-color: lightgray;
+    }
+    .nav_bar{
+        flex-direction: row;
+        font-family: Arial;
+        background-color: gray;
+    }
+    a{
+        color: deepskyblue;
+    }
+    .nav_text{
+        font-weight: bold;
+        color: #4a4a4a;
+    }
+    .stretch{}
+    img {max-width: 233px}
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Accounts; UWM TA Scheduling Tool</title>
+</head>
+<body>
+<img alt="UWM TA Scheduler Tool Logo" src="{% static 'images/UWM_TA_sched_logo.png' %}">
+<div class="main_box">
+    <div class="nav_bar">
+        <a href="">Dashboard</a>
+        <a href="courses.html">Courses</a>
+        <a href="send_notifs.html">Send Notifications</a>
+        <div class="nav_text">Accounts</div>
+        <a href="feedback.html">Feedback</a>
+        <div class="stretch"></div>
+        <a href="my_acc_info.html">My Account Info</a>
+    </div>
+</div>
+</body>
+</html>
