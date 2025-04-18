@@ -4,30 +4,69 @@
 <style>
     body{
         display: flex;
+  		flex-direction: column;
         background-color: white;
-        width: 100%;
-        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
     }
+      header {
+      display: flex;
+      align-items: flex-end;
+      background: white;
+        padding: 10px 20px;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      padding: 10px;
+      background: #c4c4c4;
+      font-size: 14px;
+    }
+    nav a {
+      color: #0000ee;
+      text-decoration: none;
+      margin-right: 18px;
+      line-height: 32px;
+
+    }
+    nav a:hover { text-decoration: underline; }
+
+    nav a.active {
+  		pointer-events: none;
+      	cursor: default;
+       	font-weight: 600;
+      	color: black;
+  }
     .main_box{
         margin: 2%;
         flex-direction: column;
-        width: 100%;
-        height: 100%;
         background-color: lightgray;
+  		height: 100%;
     }
-    .nav_bar{
-        flex-direction: row;
-        font-family: Arial;
-        background-color: gray;
+      nav .right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+    nav .right span.icon {
+      font-size: 18px;
+      font-weight: bold;
+      margin-left: 6px;
+      cursor: pointer;
+    }
+
+    main {
+      padding: 10px 14px;
+    }
+    h2 {
+      margin: 0 0 6px 0;
+      font-size: 15px;
+      font-weight: 700;
     }
     a{
         color: deepskyblue;
     }
-    .nav_text{
-        font-weight: bold;
-        color: #4a4a4a;
-    }
-    .stretch{}
+    .stretch{margin-left: auto;}
     img {max-width: 233px}
 </style>
 <head>
@@ -35,17 +74,22 @@
     <title>Accounts; UWM TA Scheduling Tool</title>
 </head>
 <body>
-<img alt="UWM TA Scheduler Tool Logo" src="{% static 'images/UWM_TA_sched_logo.png' %}">
+  <header>
+    <img alt="UWM TA Scheduler Tool Logo" src="{% static 'images/UWM_TA_sched_logo.png' %}">
+  </header>
 <div class="main_box">
     <nav>
         <a href="">Dashboard</a>
         <a href="courses.html">Courses</a>
         <a href="send_notifs.html">Send Notifications</a>
-        <div class="nav_text">Accounts</div>
+        <a href="#" class="active">Accounts</a>
         <a href="feedback.html">Feedback</a>
         <div class="stretch"></div>
         <a href="my_acc_info.html">My Account Info</a>
     </nav>
+  <div style="height:200px; background-color:black; margin:40px">
+    epic
+  </div>
 </div>
 </body>
 </html>
