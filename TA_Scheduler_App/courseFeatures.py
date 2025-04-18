@@ -1,7 +1,7 @@
-from TA_Scheduler_App.models import Lab,Section,Course
+from TA_Scheduler_App.models import Lab, Section, Course
+
 
 class CourseFeatures:
-
     @staticmethod
     def create_course(self, courseName):
         course = Course.objects.create(courseName=courseName)
@@ -29,7 +29,6 @@ class CourseFeatures:
         except Course.DoesNotExist:
             return False
 
-
     @staticmethod
     def delete_section(self, sectionKey):
         try:
@@ -53,7 +52,7 @@ class CourseFeatures:
     def edit_course(self, courseKey, newCourseName=""):
         course = Course.objects.get(pk=courseKey)
 
-        if newCourseName is not '' and newCourseName is not None:
+        if newCourseName:
             course.courseName = newCourseName
             course.save()
 
@@ -63,20 +62,18 @@ class CourseFeatures:
     def edit_section(self, sectionKey, newSectionTime=None):
         section = Section.objects.get(pk=sectionKey)
 
-        if newSectionTime is not None and newSectionTime is not '':
+        if newSectionTime:
             section.sectionTime = newSectionTime
             section.save()
 
         return section
 
-
     @staticmethod
     def edit_lab(self, labKey, newLabTime=None):
         lab = Lab.objects.get(pk=labKey)
 
-        if newLabTime is not None and newLabTime is not '' :
+        if newLabTime:
             lab.labTime = newLabTime
             lab.save()
 
         return lab
-
