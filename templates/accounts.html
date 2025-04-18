@@ -1,95 +1,68 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<style>
-    body{
-        display: flex;
-  		flex-direction: column;
-        background-color: white;
-        font-family: Arial, Helvetica, sans-serif;
-    }
-      header {
+  <style>
+    body {
       display: flex;
-      align-items: flex-end;
-      background: white;
-        padding: 10px 20px;
+      flex-direction: column;
+      background-color: white;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .main_box {
+      margin: 0 1.5% 0 1.5%;
+      flex-direction: column;
+      background-color: lightgray;
+      height: 100%;
     }
     nav {
       display: flex;
       align-items: center;
       height: 32px;
-      padding: 10px;
+      padding: 10px 0 10px 0;
       background: #c4c4c4;
-      font-size: 14px;
+      font-size: 18px;
     }
     nav a {
       color: #0000ee;
       text-decoration: none;
-      margin-right: 18px;
-      line-height: 32px;
-
+      margin: 0 9px 0 9px;
     }
-    nav a:hover { text-decoration: underline; }
-
+    nav a:hover {
+      background-color: #999999;
+    }
     nav a.active {
-  		pointer-events: none;
-      	cursor: default;
-       	font-weight: 600;
-      	color: black;
-  }
-    .main_box{
-        margin: 2%;
-        flex-direction: column;
-        background-color: lightgray;
-  		height: 100%;
+      pointer-events: none;
+      cursor: default;
+      font-weight: 600;
+      color: black;
     }
-      nav .right {
+    nav .right {
       margin-left: auto;
-      display: flex;
-      align-items: center;
     }
-    nav .right span.icon {
-      font-size: 18px;
-      font-weight: bold;
-      margin-left: 6px;
-      cursor: pointer;
+    img {
+      max-width: 233px;
+      margin-left: 1.5%;
     }
-
-    main {
-      padding: 10px 14px;
-    }
-    h2 {
-      margin: 0 0 6px 0;
-      font-size: 15px;
-      font-weight: 700;
-    }
-    a{
-        color: deepskyblue;
-    }
-    .stretch{margin-left: auto;}
-    img {max-width: 233px}
-</style>
-<head>
-    <meta charset="UTF-8">
+  </style>
+  <head>
+    <meta charset="UTF-8" />
     <title>Accounts; UWM TA Scheduling Tool</title>
-</head>
-<body>
-  <header>
-    <img alt="UWM TA Scheduler Tool Logo" src="{% static 'images/UWM_TA_sched_logo.png' %}">
-  </header>
-<div class="main_box">
-    <nav>
+  </head>
+  <body>
+    <img alt="UWM TA Scheduler Tool Logo" src="{% static 'images/UWM_TA_sched_logo.png' %}"/>
+    <div class="main_box">
+      <nav>
         <a href="">Dashboard</a>
         <a href="courses.html">Courses</a>
         <a href="send_notifs.html">Send Notifications</a>
-        <a href="#" class="active">Accounts</a>
+        <a href="accounts.html" class="active">Accounts</a>
         <a href="feedback.html">Feedback</a>
-        <div class="stretch"></div>
+        <div class="right"></div>
         <a href="my_acc_info.html">My Account Info</a>
-    </nav>
-  <div style="height:200px; background-color:black; margin:40px">
-    epic
-  </div>
-</div>
-</body>
+      </nav>
+      <div style="height: 200px; background-color: darkcyan; margin: 40px">
+        Placeholder
+      </div>
+    </div>
+  </body>
 </html>

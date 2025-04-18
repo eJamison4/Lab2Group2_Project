@@ -1,10 +1,71 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .main_box {
+      margin: 0 1.5% 0 1.5%;
+      flex-direction: column;
+      background-color: lightgray;
+      height: 100%;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      padding: 10px 0 10px 0;
+      background: #c4c4c4;
+      font-size: 18px;
+    }
+    nav a {
+      color: #0000ee;
+      text-decoration: none;
+      margin: 0 9px 0 9px;
+    }
+    nav a:hover {
+      background-color: #999999;
+    }
+    nav a.active {
+      pointer-events: none;
+      cursor: default;
+      font-weight: 600;
+      color: black;
+    }
+    nav .right {
+      margin-left: auto;
+    }
+    img {
+      max-width: 233px;
+      margin-left: 1.5%;
+    }
+  </style>
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Account Info; UWM TA Scheduling Tool</title>
+  </head>
+  <body>
+    <img
+      alt="UWM TA Scheduler Tool Logo"
+      src="{% static 'images/UWM_TA_sched_logo.png' %}"
+    />
+    <div class="main_box">
+      <nav>
+        <a href="">Dashboard</a>
+        <a href="courses.html">Courses</a>
+        <a href="send_notifs.html">Send Notifications</a>
+        <a href="accounts.html">Accounts</a>
+        <a href="feedback.html">Feedback</a>
+        <div class="right"></div>
+        <a href="my_acc_info.html" class="active">My Account Info</a>
+      </nav>
+      <div style="height: 200px; background-color: darkcyan; margin: 40px">
+        Placeholder
+      </div>
+    </div>
+  </body>
 </html>
