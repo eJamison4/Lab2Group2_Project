@@ -1,6 +1,6 @@
 from django.shortcuts import render  # , redirect
 from django.views import View
-
+from django.contrib.auth import authenticate, login
 
 # Create your views here.
 class Login(View):
@@ -13,14 +13,21 @@ class Login(View):
 
         if username.strip() == "" or password.strip() == "":  # do nothing if either field is empty
             return render(request, "login.html")
+            
         print(username)
         print(password)
+        
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return render(request, "dashboard.html", {"username": username})
         return render(
             request,
             "login.html",
             {"message": "Either username or password is incorrect!"}
         )
         # return redirect()
+       
 
 
 class Account(View):
