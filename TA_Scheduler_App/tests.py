@@ -1,7 +1,8 @@
 # Imports the TestCase framework.  Allows each test case to act isolated from each other.
 from django.test import TestCase
 from TA_Scheduler_App.models import Section, Course, Lab, User
-from TA_Scheduler_App.courseFeatures import CourseFeatures, AccountFeatures
+from TA_Scheduler_App.courseFeatures import CourseFeatures
+from TA_Scheduler_App.account_features import AccountFeatures
 
 # Create your tests here.
 
