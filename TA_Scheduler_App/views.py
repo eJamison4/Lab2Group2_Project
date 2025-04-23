@@ -40,56 +40,70 @@ class Account(View):
 
     def get(self, request):
         users = User.objects.all().order_by("id")
-        print(users)
         return render(request, self.template_name, {"users": users})
 
     def post(self, request):
-        print("Start of post")
-
         action = request.POST.get('action')
 
-        print(action)
 
         try:
             if action == "create":
-                print("Create new account")
                 # Handle account creation with validation
-                new_username = request.POST.get('username')
-                account_type = request.POST.get('accountType', '0')  # Default to '0' if missing
+                new_data ={
+                    "new_username" : request.POST.get('username'),
+                    "new_password" : request.POST.get('password'),
+                    "new_email" : request.POST.get('userEmail'),
+                    "new_first_name" : request.POST.get('firstName'),
+                    "new_last_name" : request.POST.get('lastName'),
+                    "new_home_address" : request.POST.get('homeAddress'),
+                }
+
+                if (new_data["new_username"] is None or new_data["new_password"] is None or
+                        new_data["new_email"] is None or
+                        new_data["new_first_name"] is None or new_data["new_last_name"] is None or
+                        new_data["new_home_address"] is None):
+                    messages.error(request, "Creation Error: Please fill all fields")
+                    return redirect('accounts')
+
+                new_data["new_username"] = new_data["new_username"].strip()
+                new_data["new_password"] = new_data["new_password"].strip()
+                new_data["new_email"] = new_data["new_email"].strip()
+                new_data["new_first_name"] = new_data["new_first_name"].strip()
+                new_data["new_last_name"] = new_data["new_last_name"].strip()
+                new_data["new_home_address"] = new_data["new_home_address"].strip()
+
+                new_account_type = request.POST.get('accountType', '2')  # Default to '2' if missing
                 try:
-                    account_type = int(account_type)
+                    new_account_type = int(new_account_type)
                 except ValueError:
-                    messages.error(request, "Invalid account type")
+                    messages.error(request, "Creation Error: Please choose a valid account type")
                     return redirect('accounts')
 
                 AccountFeatures.create_user(
-                    username=request.POST.get('username', '').strip(),
-                    password=request.POST.get('password', '').strip(),
-                    user_email=request.POST.get('userEmail', '').strip(),
-                    first_name=request.POST.get('firstName', '').strip(),
-                    last_name=request.POST.get('lastName', '').strip(),
-                    home_address=request.POST.get('homeAddress', '').strip(),
-                    account_type=account_type  # Now guaranteed to be an integer
+                    username=new_data["new_username"],
+                    password=new_data["new_password"],
+                    user_email=new_data["new_email"],
+                    first_name=new_data["new_first_name"],
+                    last_name=new_data["new_last_name"],
+                    home_address=new_data["new_home_address"],
+                    account_type=new_account_type  # Now guaranteed to be an integer
                 )
                 messages.success(request, "User created successfully")
 
             elif action == "edit":
                 # Handle account editing
-                print("Start of edit")
-                primarykey = request.POST.get("pk")
+                primary_key = request.POST.get("pk")
 
-                # Match EXACT model field names (case-sensitive)
-                print("getting updates")
                 updates = {
                     'username': request.POST.get('username', '').strip(),
                     'password': request.POST.get('password', '').strip(),
-                    'user_email': request.POST.get('userEmail', '').strip(),  # Changed to userEmail
-                    'first_name': request.POST.get('firstName', '').strip(),  # Changed to firstName
-                    'last_name': request.POST.get('lastName', '').strip(),  # Changed to lastName
-                    'home_address': request.POST.get('homeAddress', '').strip(),  # Changed to homeAddress
-                    'phone_number': request.POST.get('phoneNumber', '').strip() or None,  # Changed to phoneNumber
-                    'account_type': request.POST.get('accountType'),  # Changed to accountType
-                    'user_id': primarykey
+                    'user_email': request.POST.get('userEmail', '').strip(),
+                    'first_name': request.POST.get('firstName', '').strip(),
+                    'last_name': request.POST.get('lastName', '').strip(),
+                    'home_address': request.POST.get('homeAddress', '').strip(),
+                    'phone_number': request.POST.get('phoneNumber', '').strip() or None,
+                    'account_type': request.POST.get('accountType'),
+                    'user_id': primary_key
                 }
 
                 print("converting account type")
@@ -98,25 +112,19 @@ class Account(View):
                     try:
                         updates['account_type'] = int(updates['account_type'])
                     except ValueError:
-                        messages.error(request, "Invalid role selection")
+                        messages.error(request, "Edit Error: Invalid role selection")
                         return redirect('accounts')
-                print("converting phone number")
+
                 if updates['phone_number']:
                     try:
                         updates['phone_number'] = int(updates['phone_number'])
                     except ValueError:
-                        messages.error(request, "Invalid phone number")
+                        messages.error(request, "Edit Error: Invalid phone number")
                         return redirect('accounts')
 
-                # Remove empty values
-
-                user_id = primarykey
-
-                print("prep to update user")
                 if updates:
                     try:
-                        print("updating user")
-                        user_id = AccountFeatures.edit_account(user_id = primarykey, username=updates['username']
+                        AccountFeatures.edit_account(user_id = primary_key, username=updates['username']
                                                                , password=updates['password']
                                                                , user_email=updates['user_email']
                                                                , first_name=updates['first_name']
@@ -124,38 +132,21 @@ class Account(View):
                                                                , home_address=updates['home_address']
                                                                , phone_number=updates['phone_number']
                                                                , account_type=updates['account_type'])
-                        print("done updating")
+                        messages.success(request,"Account Updated Successfully")
                     except Exception as e:
-                        print(e)
-
-                user = User.objects.get(pk = user_id)
-
-                print("DEBUG: Edit form submitted with data:", request.POST)
-                print("Processed updates:", updates)
-                print("DEBUG: new username:\n", user.username)
-                print("DEBUG: new password:\n", user.password)
-                print("DEBUG: new email:\n", user.userEmail)
-                print("DEBUG: new phone number:\n", user.phoneNumber)
-                print("DEBUG: new ROLE:\n", user.accountType)
-                print("DEBUG: new address:\n", user.homeAddress)
+                        messages.error(request, "Edit Error: " + str(e))
 
             elif action == "delete":
                 # Handle deletion
-                print("Start of delete")
-                primarykey = request.POST.get('pk')
-                print(primarykey)
-                if AccountFeatures.delete_account(user_id= primarykey) is True:
+                primary_key = request.POST.get('pk')
+                if AccountFeatures.delete_account(user_id= primary_key) is True:
                     messages.success(request, "User deleted successfully")
-                    print("DEBUG: User deleted successfully")
                 else:
-                    messages.error(request, "User not found")
+                    messages.error(request, "Deletion Error: User not found")
 
         except IntegrityError as e:
             messages.error(request, f"Database error: {str(e)}")
-            print(e)
         except Exception as e:
             messages.error(request, f"Error: {str(e)}")
-            print(e)
 
-        print("end of post")
         return redirect('accounts')

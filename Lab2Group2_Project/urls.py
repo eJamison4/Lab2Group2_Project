@@ -20,6 +20,6 @@ from TA_Scheduler_App.views import Login, Account
 
 urlpatterns = [
     #path("admin/", admin.site.urls),
-    path('', Login.as_view()),
+    path('', Login.as_view(), name = "login"),
     path('accounts/', Account.as_view(), name = 'accounts'),
 ]

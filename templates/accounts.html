@@ -69,7 +69,7 @@
   </header>
 
   <nav>
-    <a href="#">Dashboard</a>
+    <a href={% url "login" %}>Dashboard</a>
     <a href="#">Courses</a>
     <a href="#">Send Notifications</a>
     <a href="#" class="active">Accounts</a>
@@ -83,7 +83,15 @@
 
   <main>
     <h2>Accounts</h2>
-
+    {% if messages %}
+      {% for message in messages %}
+        {% if forloop.last %}  <!-- Show only the last message -->
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
     <!-- create -->
     <form method="post" class="inline">{% csrf_token %}
       <input type="hidden" name="action" value="create">
