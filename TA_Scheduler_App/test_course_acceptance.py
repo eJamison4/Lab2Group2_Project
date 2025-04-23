@@ -116,3 +116,28 @@ class TestCourseViewAcceptance(TestCase):
         })
         course.refresh_from_db()
         self.assertEqual(course.courseName, "Original Course", msg="Blank edit should not change course name")
+
+    def test_prevent_duplicate_course_names(self):
+        session = self.client.session
+        session['_auth_user_id'] = self.admin_user.id
+        session.save()
+    
+        self.client.post('/courses/', {"action": "create", "courseName": "CS 101"})
+        response = self.client.post('/courses/', {"action": "create", "courseName": "CS 101"})
+
+        self.assertEqual(Course.objects.filter(courseName="CS 101").count(), 1)
+        self.assertIn(response.status_code, [400, 409])  # depends on your handling
+
+    def test_course_creation_missing_name(self):
+        session = self.client.session
+        session['_auth_user_id'] = self.admin_user.id
+        session.save()
+
+        response = self.client.post('/courses/', {
+            "action": "create",
+            "courseName": ""
+        })
+        self.assertEqual(Course.objects.count(), 0)
+        self.assertEqual(response.status_code, 400)
+
+
