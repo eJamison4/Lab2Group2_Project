@@ -48,7 +48,6 @@
     main { padding: 10px 14px; }
     h2   { margin: 0 0 6px 0; font-size: 15px; font-weight: 700; }
 
-    /* ====== additional tiny rules for the panel ====== */
     #user‑panel {
       border: 1px solid black;
       background: white;
@@ -85,6 +84,7 @@
   <main>
     <h2>Accounts</h2>
 
+    <!-- create -->
     <form method="post" class="inline">{% csrf_token %}
       <input type="hidden" name="action" value="create">
       <input class="small" name="username"    placeholder="Username">
@@ -94,14 +94,12 @@
       <input class="small" name="lastName"    placeholder="Last name">
       <input class="small" name="homeAddress" placeholder="Home address">
       <br>
-      <form>
         <input type="radio" id="Admin" name="accountType" value=0>
         <label for="Admin">Admin</label><br>
         <input type="radio" id="Instructor" name="accountType" value=1>
         <label for="Instructor">Instructor</label><br>
         <input type="radio" id="TA" name="accountType" value=2>
         <label for="TA">TA</label>
-      </form>
       <button>Add User</button>
     </form>
 
@@ -113,36 +111,40 @@
           <div style="margin-left:14px">
             Email: {{ u.userEmail }}<br>
             Phone #: {{ u.phoneNumber|default:'N/A' }}<br>
-            Role: {% if u.accountType == 2 %}Admin{% elif u.accountType == 1 %}Instructor{% else %}Assistant{% endif %}
+            Role: {% if u.accountType == 2 %}TA{% elif u.accountType == 1 %}Instructor{% else %}Admin{% endif %}
 
             <!-- inline edit -->
             <form method="post" class="inline" style="margin-top:4px">{% csrf_token %}
-              <input type="hidden" name="action"  value="edit">
-              <input type="hidden" name="user_id" value="{{ u.id }}">
-              <input class="small" name="username" placeholder= "Edit username">
-              <input class="small" name="password" placeholder = "Edit password">
-              <input class="small" name="userEmail" placeholder = "Edit Email">
-              <input class="small" name="homeAddress" placeholder = "Edit address">
+                <input type="hidden" name ="action" value="edit">
+                <input type="hidden" name = "pk" value = {{ u.pk }}>
+              <input class="small" name="username" placeholder="Edit username">
+              <input class="small" name="userEmail" placeholder="Edit Email">
               <input class="small" name="firstName" placeholder="Edit First Name">
               <input class="small" name="lastName" placeholder="Edit Last Name">
+              <input class="small" name="homeAddress" placeholder="Edit address">
               <input class="small" name="phoneNumber" placeholder="New phone">
               <br>
-              <form>
-                <input type="radio" id="Admin" name="accountType" value=0>
-                <label for="Admin">Admin</label><br>
-                <input type="radio" id="Instructor" name="accountType" value=1>
-                <label for="Instructor">Instructor</label><br>
-                <input type="radio" id="TA" name="accountType" value=2>
-                <label for="TA">TA</label>
-              </form>
-              <button title="Save">Save</button>
+                <div>
+                  <input type="radio" id="Admin_{{ u.pk }}" name="accountType" value="0"
+                         {% if u.accountType == 0 %}checked{% endif %}>
+                  <label for="Admin_{{ u.pk }}">Admin</label><br>
+
+                  <input type="radio" id="Instructor_{{ u.pk }}" name="accountType" value="1"
+                         {% if u.accountType == 1 %}checked{% endif %}>
+                  <label for="Instructor_{{ u.pk }}">Instructor</label><br>
+
+                  <input type="radio" id="TA_{{ u.pk }}" name="accountType" value="2"
+                         {% if u.accountType == 2 %}checked{% endif %}>
+                  <label for="TA_{{ u.pk }}">TA</label>
+                </div>
+           <button title="Save">Save</button>
             </form>
 
             <!-- delete -->
             <form method="post" class="inline">{% csrf_token %}
               <input type="hidden" name="action" value="delete">
-              <input type="hidden" name="user_id" value="{{ u.id }}">
-              <button onclick="return confirm('Delete this user?')" title="Delete">Delete</button>
+              <input type="hidden" name="pk" value="{{ u.pk }}">
+              <button title="Delete">Delete</button>
             </form>
           </div>
         </details>

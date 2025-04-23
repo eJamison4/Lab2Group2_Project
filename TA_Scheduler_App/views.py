@@ -1,4 +1,6 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.db import IntegrityError
 from django.shortcuts import render, redirect, reverse
 from django.views import View
 from TA_Scheduler_App.models import User
@@ -38,31 +40,122 @@ class Account(View):
 
     def get(self, request):
         users = User.objects.all().order_by("id")
+        print(users)
         return render(request, self.template_name, {"users": users})
 
     def post(self, request):
+        print("Start of post")
+
         action = request.POST.get('action')
 
-        if action == "create":
+        print(action)
 
-            AccountFeatures.create_user(username=request.POST.get('username'), password=request.POST.get('password')
-                                        , user_email=request.POST.get('userEmail'), first_name=request.POST.get('firstName'),
-                                        last_name=request.POST.get('lastName'), home_address=request.POST.get('homeAddress'),
-                                        account_type=int(request.POST.get('accountType')) or 0,)
+        try:
+            if action == "create":
+                print("Create new account")
+                # Handle account creation with validation
+                new_username = request.POST.get('username')
+                account_type = request.POST.get('accountType', '0')  # Default to '0' if missing
+                try:
+                    account_type = int(account_type)
+                except ValueError:
+                    messages.error(request, "Invalid account type")
+                    return redirect('accounts')
 
-        elif action == "edit":
+                AccountFeatures.create_user(
+                    username=request.POST.get('username', '').strip(),
+                    password=request.POST.get('password', '').strip(),
+                    user_email=request.POST.get('userEmail', '').strip(),
+                    first_name=request.POST.get('firstName', '').strip(),
+                    last_name=request.POST.get('lastName', '').strip(),
+                    home_address=request.POST.get('homeAddress', '').strip(),
+                    account_type=account_type  # Now guaranteed to be an integer
+                )
+                messages.success(request, "User created successfully")
 
-            user_id = request.POST.get("user_id")
+            elif action == "edit":
+                # Handle account editing
+                print("Start of edit")
+                primarykey = request.POST.get("pk")
 
-            AccountFeatures.edit_account(username=request.POST.get('username') or None, password=request.POST.get('password') or None
-                                         ,user_email=request.POST.get('userEmail') or None,
-                                         first_name=request.POST.get('firstName') or None,
-                                         last_name=request.POST.get('lastName') or None
-                                         ,home_address=request.POST.get('homeAddress') or None,
-                                         account_type=request.POST.get('accountType') or None, user_id=user_id)
-        elif action == "delete":
-            user_id = request.POST.get('user_id')
+                # Match EXACT model field names (case-sensitive)
+                print("getting updates")
+                updates = {
+                    'username': request.POST.get('username', '').strip(),
+                    'password': request.POST.get('password', '').strip(),
+                    'user_email': request.POST.get('userEmail', '').strip(),  # Changed to userEmail
+                    'first_name': request.POST.get('firstName', '').strip(),  # Changed to firstName
+                    'last_name': request.POST.get('lastName', '').strip(),  # Changed to lastName
+                    'home_address': request.POST.get('homeAddress', '').strip(),  # Changed to homeAddress
+                    'phone_number': request.POST.get('phoneNumber', '').strip() or None,  # Changed to phoneNumber
+                    'account_type': request.POST.get('accountType'),  # Changed to accountType
+                    'user_id': primarykey
+                }
 
-            AccountFeatures.delete_account(user_id=user_id)
+                print("converting account type")
+                # Convert accountType to integer
+                if updates['account_type']:
+                    try:
+                        updates['account_type'] = int(updates['account_type'])
+                    except ValueError:
+                        messages.error(request, "Invalid role selection")
+                        return redirect('accounts')
+                print("converting phone number")
+                if updates['phone_number']:
+                    try:
+                        updates['phone_number'] = int(updates['phone_number'])
+                    except ValueError:
+                        messages.error(request, "Invalid phone number")
+                        return redirect('accounts')
 
-        return redirect(reverse("accounts"))
+                # Remove empty values
+
+                user_id = primarykey
+
+                print("prep to update user")
+                if updates:
+                    try:
+                        print("updating user")
+                        user_id = AccountFeatures.edit_account(user_id = primarykey, username=updates['username']
+                                                               , password=updates['password']
+                                                               , user_email=updates['user_email']
+                                                               , first_name=updates['first_name']
+                                                               , last_name=updates['last_name']
+                                                               , home_address=updates['home_address']
+                                                               , phone_number=updates['phone_number']
+                                                               , account_type=updates['account_type'])
+                        print("done updating")
+                    except Exception as e:
+                        print(e)
+
+                user = User.objects.get(pk = user_id)
+
+                print("DEBUG: Edit form submitted with data:", request.POST)
+                print("Processed updates:", updates)
+                print("DEBUG: new username:\n", user.username)
+                print("DEBUG: new password:\n", user.password)
+                print("DEBUG: new email:\n", user.userEmail)
+                print("DEBUG: new phone number:\n", user.phoneNumber)
+                print("DEBUG: new ROLE:\n", user.accountType)
+                print("DEBUG: new address:\n", user.homeAddress)
+
+            elif action == "delete":
+                # Handle deletion
+                print("Start of delete")
+                primarykey = request.POST.get('pk')
+                print(primarykey)
+                if AccountFeatures.delete_account(user_id= primarykey) is True:
+                    messages.success(request, "User deleted successfully")
+                    print("DEBUG: User deleted successfully")
+                else:
+                    messages.error(request, "User not found")
+
+        except IntegrityError as e:
+            messages.error(request, f"Database error: {str(e)}")
+            print(e)
+        except Exception as e:
+            messages.error(request, f"Error: {str(e)}")
+            print(e)
+
+        print("end of post")
+        return redirect('accounts')
