@@ -50,6 +50,11 @@ class AccountFeatures:
             #The primary key for the account is used to retrieve the appropriate account
             user = User.objects.get(pk = user_id)
 
+            print("\n--- BEFORE CHANGES ---")
+            print(f"Username: {user.username}")
+            print(f"Email: {user.userEmail}")
+            print(f"Account Type: {user.accountType}")
+
             #This chain of if statements check which fields is desired to change
             #For example, if no new username is given,
             # it skips that field and focuses on other fields that need to be changed
@@ -72,7 +77,12 @@ class AccountFeatures:
 
             #saves the current user instance
             user.save()
-            return user
+
+            print("\n--- AFTER CHANGES ---")
+            print(f"Username: {user.username}")
+            print(f"Email: {user.userEmail}")
+            print(f"Account Type: {user.accountType}\n")
+            return user.pk
         #Error check if the account does not exist, likely not needed
         except User.DoesNotExist:
             return None
