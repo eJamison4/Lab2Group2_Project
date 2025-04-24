@@ -132,8 +132,8 @@
     <h2>Courses</h2>
 
     <div id="course-form">
-      <form>
-        <input type="text" placeholder="New course name" required>
+      <form method="post">{% csrf_token %}
+        <input type="text" placeholder="New course name" name="course" required>
         <button type="submit">Add Course</button>
       </form>
     </div>
