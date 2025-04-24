@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views import View
 
 
@@ -171,16 +171,32 @@ class Account(View):
         return redirect('accounts')
 
 
-class CourseCreate(View):
+class Courses(View):
     def get(self, request):
-        courseName = Course.objects.all().order_by('id')
-        return render(request, 'courses.html', {'courses': courseName})
-
+        courses = Course.objects.all()
+        # prefetch sections so the template can loop efficiently
+        courses = Course.objects.prefetch_related("section_set").all()
+        print("COURSES:", courses)
+        return render(request, "courses.html", {"courses": courses})
 
     def post(self, request):
-        courseName = request.POST.get('course')
-        course = CourseFeatures.create_course(self,courseName=courseName)
+        name = request.POST.get("courseName")
+        if name:
+            Course.objects.create(courseName=name)
+        return redirect("courses")
 
-        return render(request,'courses.html',{'courses':courseName})
+class AddSection(View):
+
+    def post(self, request, course_id):
+        course     = get_object_or_404(Course, pk=course_id)
+        code       = request.POST.get("sectionCode")
+        instructor = request.POST.get("instructor")
+        if code:
+            Section.objects.create(
+                course=course,
+                sectionCode=code,
+                instructor=instructor or ""
+            )
+        return redirect("courses")
 
 
