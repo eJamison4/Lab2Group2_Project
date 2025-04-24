@@ -4,8 +4,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, reverse
 from django.views import View
+
 from TA_Scheduler_App.models import User
 from TA_Scheduler_App.account_features import AccountFeatures
+
 
 
 
@@ -22,6 +24,7 @@ class Login(View):
 
         if username.strip() == "" or password.strip() == "":  # do nothing if either field is empty
             return render(request, "login.html")
+
         user = authenticate(request, username=username, password=password)
 
         print(username)
@@ -36,6 +39,7 @@ class Login(View):
             {"message": "Either username or password is incorrect!"}
         )
         # return redirect()
+       
 
 
 class Dashboard(LoginRequiredMixin, View):
