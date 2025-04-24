@@ -148,14 +148,16 @@
         </tr>
       </thead>
       <tbody>
+      {% for i in courses %}
         <tr>
-          <td>1</td>
-          <td>CS101</td>
+          <td>{{ i.pk }}</td>
+          <td>{{ i.courseName }}</td>
           <td>
             <a href="#" class="action">Add Section</a>
             <a href="#" class="action">Edit</a>
           </td>
         </tr>
+      {% endfor %}
       </tbody>
     </table>
   </main>

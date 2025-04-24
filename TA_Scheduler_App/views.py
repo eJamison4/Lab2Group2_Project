@@ -160,12 +160,14 @@ class Account(View):
 
 class CourseCreate(View):
     def get(self, request):
-        pass
+        courseName = Course.objects.all().order_by('id')
+        return render(request, 'courses.html', {'courses': courseName})
+
 
     def post(self, request):
         courseName = request.POST.get('course')
         course = CourseFeatures.create_course(self,courseName=courseName)
 
-        return render(request,'courses.html',{'course':course})
+        return render(request,'courses.html',{'courses':courseName})
 
 
