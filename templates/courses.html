@@ -132,8 +132,8 @@
     <h2>Courses</h2>
 
     <div id="course-form">
-      <form>
-        <input type="text" placeholder="New course name" required>
+      <form method="post">{% csrf_token %}
+        <input type="text" placeholder="New course name" name="course" required>
         <button type="submit">Add Course</button>
       </form>
     </div>
@@ -148,14 +148,16 @@
         </tr>
       </thead>
       <tbody>
+      {% for i in courses %}
         <tr>
-          <td>1</td>
-          <td>CS101</td>
+          <td>{{ i.pk }}</td>
+          <td>{{ i.courseName }}</td>
           <td>
             <a href="#" class="action">Add Section</a>
             <a href="#" class="action">Edit</a>
           </td>
         </tr>
+      {% endfor %}
       </tbody>
     </table>
   </main>

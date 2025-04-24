@@ -5,8 +5,10 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect, reverse
 from django.views import View
 
-from TA_Scheduler_App.models import User
+
+from TA_Scheduler_App.models import User, Course, Section, Lab, Assignment
 from TA_Scheduler_App.account_features import AccountFeatures
+from TA_Scheduler_App.courseFeatures import CourseFeatures
 
 
 
@@ -167,3 +169,18 @@ class Account(View):
             messages.error(request, f"Error: {str(e)}")
 
         return redirect('accounts')
+
+
+class CourseCreate(View):
+    def get(self, request):
+        courseName = Course.objects.all().order_by('id')
+        return render(request, 'courses.html', {'courses': courseName})
+
+
+    def post(self, request):
+        courseName = request.POST.get('course')
+        course = CourseFeatures.create_course(self,courseName=courseName)
+
+        return render(request,'courses.html',{'courses':courseName})
+
+
