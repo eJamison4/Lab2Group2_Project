@@ -21,14 +21,18 @@ class User(AbstractUser):
 
 
 class Course(models.Model):
+    objects = None
     courseName = models.CharField(max_length=20)
+    def __str__(self):
+        return self.courseName
 
 
 class Section(models.Model):
     #not sure how to format the times
     # startTime, endTime, daysOfWeek?
-    sectionTime = models.CharField(max_length=20)
-    courseForeignKey = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course       = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="section_set")
+    sectionCode  = models.CharField(max_length=20)   # must be exactly sectionCode
+    instructor   = models.CharField(max_length=100, blank=True)
 
 class Lab(models.Model):
     labTime = models.CharField(max_length=20)
