@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Courses &mdash; TA Scheduling Tool</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: white;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-end;
+      background: white;
+      padding: 10px 20px;
+    }
+    header img {
+      height: 100px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      padding: 10px;
+      background: #c4c4c4;
+      font-size: 14px;
+    }
+    nav a {
+      color: #0000ee;
+      text-decoration: none;
+      margin-right: 18px;
+      line-height: 32px;
+    }
+    nav a:hover { text-decoration: underline; }
+    nav a.active {
+      background: lightgray;
+      border: 1px solid darkgray;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-weight: 600;
+      color: black;
+    }
+    nav .right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+    nav .right span.icon {
+      font-size: 18px;
+      font-weight: bold;
+      margin-left: 6px;
+      cursor: pointer;
+    }
+
+    main {
+      padding: 10px 14px;
+    }
+    h2 {
+      margin: 0 0 12px 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    #course-form {
+      margin-bottom: 20px;
+    }
+    #course-form input[type="text"] {
+      padding: 6px;
+      width: 200px;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      margin-right: 8px;
+    }
+    #course-form button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 2px;
+      background: #007acc;
+      color: white;
+      cursor: pointer;
+    }
+    #course-form button:hover {
+      background: #005fa3;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #e0e0e0;
+      text-align: left;
+    }
+    th {
+      background: #f0f0f0;
+    }
+    a.action {
+      color: #007acc;
+      text-decoration: none;
+      margin-right: 8px;
+    }
+    a.action:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="../static/images/UWM_TA_sched_logo.png" alt="UWM Logo">
+  </header>
+
+  <nav>
+    <a href="#" class="">Dashboard</a>
+    <a href="#" class="active">Courses</a>
+    <a href="#">Send Notifications</a>
+    <a href="#">Accounts</a>
+    <a href="#">Feedback</a>
+
+    <div class="right">
+      <a href="#">My Account Info</a>
+      <span class="icon">&#x2753;</span>
+    </div>
+  </nav>
+
+  <main>
+    <h2>Courses</h2>
+
+    <div id="course-form">
+      <form>
+        <input type="text" placeholder="New course name" required>
+        <button type="submit">Add Course</button>
+      </form>
+    </div>
+
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>CS101</td>
+          <td>
+            <a href="#" class="action">Add Section</a>
+            <a href="#" class="action">Edit</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+
+</body>
+</html>
