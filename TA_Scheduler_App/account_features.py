@@ -14,7 +14,7 @@ class AccountFeatures:
     def create_user(username : str, password : str, user_email: str,
                     first_name: str, last_name: str, home_address: str, account_type: int= 0, phone_number: int =0):
         #Account creation happens here
-        user = User.objects.create(username=username,
+        user = User.objects.create_user(username=username,
                                    password=password, userEmail=user_email,
                                    phoneNumber=phone_number, firstName=first_name,
                                    lastName=last_name, homeAddress = home_address, accountType=account_type)
@@ -58,21 +58,21 @@ class AccountFeatures:
             #This chain of if statements check which fields is desired to change
             #For example, if no new username is given,
             # it skips that field and focuses on other fields that need to be changed
-            if username is not "":
+            if username != "":
                 user.username = username
-            if password is not "":
+            if password != "":
                 user.password = password
-            if user_email is not "":
+            if user_email != "":
                 user.userEmail = user_email
             if phone_number is not None:
                 user.phoneNumber = phone_number
-            if first_name is not "":
+            if first_name != "":
                 user.firstName = first_name
-            if last_name is not "":
+            if last_name != "":
                 user.lastName = last_name
             if account_type is not None:
                 user.accountType = account_type
-            if home_address is not "":
+            if home_address != "":
                 user.homeAddress = home_address
 
             #saves the current user instance

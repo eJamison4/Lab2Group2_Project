@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, reverse
 from django.views import View
@@ -11,6 +12,8 @@ from TA_Scheduler_App.account_features import AccountFeatures
 # Create your views here.
 class Login(View):
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('dashboard')
         return render(request, "login.html", {})
 
     def post(self, request):
@@ -34,6 +37,16 @@ class Login(View):
         )
         # return redirect()
 
+
+class Dashboard(LoginRequiredMixin, View):
+    login_url = '/'
+
+    def get(self, request):
+        # Add any dashboard context data here
+        return render(request, "dashboard.html", {
+            "user": request.user,
+            "is_admin": request.user.accountType == 2
+        })
 
 class Account(View):
     template_name = "accounts.html"
