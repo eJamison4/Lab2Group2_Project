@@ -139,7 +139,7 @@ class TestAccountFeatures(TestCase):
         # All data sent is checked if it can be retrieved as intended
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(user.username, "Teach")
-        self.assertEqual(user.check_password("pass123"), True)
+        self.assertEqual(user.password, "pass123")
         self.assertEqual(user.phoneNumber, 0)
         self.assertEqual(user.accountType, 0)
         self.assertEqual(user.lastName, "Doe")
@@ -167,7 +167,7 @@ class TestAccountFeatures(TestCase):
         )
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(user.username, "Teach")
-        self.assertEqual(user.check_password("pass123"), True)
+        self.assertEqual(user.password, "pass123")
         self.assertEqual(user.phoneNumber, 1114449999)  # This is what is checked
         self.assertEqual(user.accountType, 0)
         self.assertEqual(user.lastName, "Doe")
@@ -196,7 +196,7 @@ class TestAccountFeatures(TestCase):
         )
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(user.username, "Teach")
-        self.assertEqual(user.check_password("pass123"), True)
+        self.assertEqual(user.password, "pass123")
         self.assertEqual(user.phoneNumber, 0)
         self.assertEqual(user.accountType, 2)  # This is what is checked
         self.assertEqual(user.lastName, "Doe")
@@ -225,7 +225,7 @@ class TestAccountFeatures(TestCase):
 
         self.assertEqual(User.objects.count(), 1)  # Should be one
         self.assertEqual(user.username, "Teach")
-        self.assertEqual(user.check_password("pass123"), True)
+        self.assertEqual(user.password, "pass123")
         self.assertEqual(user.phoneNumber, 1114449999)
         self.assertEqual(user.accountType, 0)
         self.assertEqual(user.lastName, "Doe")
@@ -256,7 +256,7 @@ class TestAccountFeatures(TestCase):
         )
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(user.username, "Teach")
-        self.assertEqual(user.check_password("pass123"), True)
+        self.assertEqual(user.password, "pass123")
         self.assertEqual(user.phoneNumber, 1114449999)
         self.assertEqual(user.accountType, 0)
         self.assertEqual(user.lastName, "Doe")
@@ -266,16 +266,14 @@ class TestAccountFeatures(TestCase):
         user_id = user.pk
 
         # Primary key is passed to find the account to edit
-        user_id = self.service.edit_account(
+        user = self.service.edit_account(
             user_id, username="Edited", phone_number=2223337777, home_address="fake address"
         )
-
-        user = User.objects.get(pk=user_id)
 
         # Checks every field again to confirm the right fields are changed
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(user.username, "Edited")  # Changed
-        self.assertEqual(user.check_password("pass123"), True)
+        self.assertEqual(user.password, "pass123")
         self.assertEqual(user.phoneNumber, 2223337777)  # Changed
         self.assertEqual(user.accountType, 0)
         self.assertEqual(user.lastName, "Doe")
@@ -326,14 +324,14 @@ class TestAccountFeatures(TestCase):
 
         # Field checks for both accounts
         self.assertEqual(user.username, "Teach")
-        self.assertEqual(user.check_password("pass123"), True)
+        self.assertEqual(user.password, "pass123")
         self.assertEqual(user.phoneNumber, 1114449999)
         self.assertEqual(user.accountType, 0)
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "123 Main St")
 
         self.assertEqual(user2.username, "Coach")
-        self.assertEqual(user2.check_password("123word"), True)
+        self.assertEqual(user2.password, "123word")
         self.assertEqual(user2.phoneNumber, 3335550000)
         self.assertEqual(user2.accountType, 2)
         self.assertEqual(user2.lastName, "Someone")
@@ -341,10 +339,7 @@ class TestAccountFeatures(TestCase):
 
         user_id1 = user.pk
 
-        user_id1 = self.service.edit_account(user_id1, username="Edited", phone_number=2223337777)
-
-        user = User.objects.get(pk=user_id1)
-
+        user = self.service.edit_account(user_id1, username="Edited", phone_number=2223337777)
         self.assertEqual(User.objects.count(), 2)  # Count should remain the same
         # fields below should change
         self.assertEqual(user.username, "Edited")
