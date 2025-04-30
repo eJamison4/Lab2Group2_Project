@@ -75,21 +75,50 @@ class Account(View):
                     "new_first_name" : request.POST.get('firstName'),
                     "new_last_name" : request.POST.get('lastName'),
                     "new_home_address" : request.POST.get('homeAddress'),
+                    "new_phone_number": request.POST.get('phoneNumber'),
                 }
 
-                if (new_data["new_username"] is None or new_data["new_password"] is None or
-                        new_data["new_email"] is None or
-                        new_data["new_first_name"] is None or new_data["new_last_name"] is None or
-                        new_data["new_home_address"] is None):
+                try:
+                    new_data["new_username"] = new_data["new_username"].strip()
+                except Exception as e:
+                    new_data["new_username"] = ""
+
+                try:
+                    new_data["new_password"] = new_data["new_password"].strip()
+                except Exception as e:
+                    new_data["new_password"] = ""
+
+                try:
+                    new_data["new_email"] = new_data["new_email"].strip()
+                except Exception as e:
+                    new_data["new_email"] = ""
+
+                try:
+                    new_data["new_first_name"] = new_data["new_first_name"].strip()
+                except Exception as e:
+                    new_data["new_first_name"] = ""
+
+                try:
+                    new_data["new_last_name"] = new_data["new_last_name"].strip()
+                except Exception as e:
+                    new_data["new_last_name"] = ""
+
+                try:
+                    new_data["new_home_address"] = new_data["new_home_address"].strip()
+                except Exception as e:
+                    new_data["new_home_address"] = ""
+
+                try:
+                    new_data["new_phone_number"] = new_data["new_phone_number"].strip()
+                except Exception as e:
+                    new_data["new_phone_number"] = ""
+
+                if (new_data["new_username"] == "" or new_data["new_password"] == "" or
+                        new_data["new_email"] == "" or
+                        new_data["new_first_name"] == "" or new_data["new_last_name"] == "" or
+                        new_data["new_home_address"] == ""):
                     messages.error(request, "Creation Error: Please fill all fields")
                     return redirect('accounts')
-
-                new_data["new_username"] = new_data["new_username"].strip()
-                new_data["new_password"] = new_data["new_password"].strip()
-                new_data["new_email"] = new_data["new_email"].strip()
-                new_data["new_first_name"] = new_data["new_first_name"].strip()
-                new_data["new_last_name"] = new_data["new_last_name"].strip()
-                new_data["new_home_address"] = new_data["new_home_address"].strip()
 
                 new_account_type = request.POST.get('accountType', '2')  # Default to '2' if missing
                 try:
@@ -97,6 +126,15 @@ class Account(View):
                 except ValueError:
                     messages.error(request, "Creation Error: Please choose a valid account type")
                     return redirect('accounts')
+                if new_data['new_phone_number'] != "":
+                    try:
+                        new_data["new_phone_number"] = int(new_data["new_phone_number"])
+                    except ValueError:
+                        messages.error(request, "Invalid phone number format")
+                        return redirect('accounts')
+                else:
+                    new_data["new_phone_number"] = 0
+
 
                 AccountFeatures.create_user(
                     username=new_data["new_username"],
@@ -105,6 +143,7 @@ class Account(View):
                     first_name=new_data["new_first_name"],
                     last_name=new_data["new_last_name"],
                     home_address=new_data["new_home_address"],
+                    phone_number=new_data["new_phone_number"],
                     account_type=new_account_type  # Now guaranteed to be an integer
                 )
                 messages.success(request, "User created successfully")
@@ -114,16 +153,46 @@ class Account(View):
                 primary_key = request.POST.get("pk")
 
                 updates = {
-                    'username': request.POST.get('username', '').strip(),
-                    'password': request.POST.get('password', '').strip(),
-                    'user_email': request.POST.get('userEmail', '').strip(),
-                    'first_name': request.POST.get('firstName', '').strip(),
-                    'last_name': request.POST.get('lastName', '').strip(),
-                    'home_address': request.POST.get('homeAddress', '').strip(),
-                    'phone_number': request.POST.get('phoneNumber', '').strip() or None,
+                    'username': request.POST.get('username', ''),
+                    'password': request.POST.get('password', ''),
+                    'user_email': request.POST.get('userEmail', ''),
+                    'first_name': request.POST.get('firstName', ''),
+                    'last_name': request.POST.get('lastName', ''),
+                    'home_address': request.POST.get('homeAddress', ''),
+                    'phone_number': request.POST.get('phoneNumber', '') or None,
                     'account_type': request.POST.get('accountType'),
                     'user_id': primary_key
                 }
+
+                try:
+                    updates["username"] = updates["username"].strip()
+                except Exception as e:
+                    updates["username"] = ""
+
+                try:
+                    updates["password"] = updates["password"].strip()
+                except Exception as e:
+                    updates["password"] = ""
+
+                try:
+                    updates["user_email"] = updates["user_email"].strip()
+                except Exception as e:
+                    updates["user_email"] = ""
+
+                try:
+                    updates["first_name"] = updates["first_name"].strip()
+                except Exception as e:
+                    updates["first_name"] = ""
+
+                try:
+                    updates["last_name"] = updates["last_name"].strip()
+                except Exception as e:
+                    updates["last_name"] = ""
+
+                try:
+                    updates["home_address"] = updates["home_address"].strip()
+                except Exception as e:
+                    updates["home_address"] = ""
 
                 print("converting account type")
                 # Convert accountType to integer
@@ -137,6 +206,7 @@ class Account(View):
                 if updates['phone_number']:
                     try:
                         updates['phone_number'] = int(updates['phone_number'])
+                        print("Phone number: ", updates['phone_number'])
                     except ValueError:
                         messages.error(request, "Edit Error: Invalid phone number")
                         return redirect('accounts')
