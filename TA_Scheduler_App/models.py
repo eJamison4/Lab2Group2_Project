@@ -53,5 +53,5 @@ class skills(models.Model):
 
 
 class teacherToTA(models.Model):
-    teacherID = models.ForeignKey(User, on_delete=models.CASCADE)
-    TAID = models.ForeignKey(User, on_delete=models.CASCADE)
+    teacherIDF = models.ForeignKey(User, on_delete=models.CASCADE,related_name="+")
+    TAIDF = models.ForeignKey(User, on_delete=models.CASCADE,related_name="+")
