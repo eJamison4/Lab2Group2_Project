@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TA Scheduling Tool – Accounts</title>
+
+  <!-- ====== (same inline CSS as dashboard) ====== -->
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: white;
+    }
+    header {
+      display: flex;
+      align-items: flex-end;
+      background: white;
+      padding: 10px 20px;
+    }
+    header img { height: 100px; }
+
+    nav {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      padding: 10px;
+      background: #c4c4c4;
+      font-size: 14px;
+    }
+    nav a {
+      color: #0000ee;
+      text-decoration: none;
+      margin-right: 18px;
+      line-height: 32px;
+    }
+    nav a:hover { text-decoration: underline; }
+    nav a.active {
+      background: lightgray;
+      border: 1px solid darkgray;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-weight: 600;
+      color: black;
+    }
+    nav .right { margin-left: auto; display: flex; align-items: center; }
+    nav .right .icon { font-size: 18px; font-weight: bold; margin-left: 6px; cursor: pointer; }
+
+    main { padding: 10px 14px; }
+    h2   { margin: 0 0 6px 0; font-size: 15px; font-weight: 700; }
+
+    #user‑panel {
+      border: 1px solid black;
+      background: white;
+      width: 100%;
+      height: 300px;
+      overflow-y: auto;
+      padding: 8px;
+    }
+    #user‑panel details { margin: 4px 0; }
+    #user‑panel summary  { cursor: pointer; font-weight: 600; }
+    form.inline   { display: inline; }
+    input.small   { width: 120px; }
+    button        { padding: 4px 8px; margin-left: 4px; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="../static/images/UWM_TA_sched_logo.png" alt="UWM Logo">
+  </header>
+
+  <nav>
+    <a href={% url "dashboard" %}>Dashboard</a>
+    <a href={% url "courses" %}>Courses</a>
+    <a href="#">Send Notifications</a>
+    <a href="#" class="active">Accounts</a>
+    <a href="#">Feedback</a>
+
+    <div class="right">
+      <a href="#">My Account Info</a>
+      <span class="icon">&#x2753;</span>
+    </div>
+  </nav>
+
+  <main>
+    <h2>Accounts</h2>
+    {% if messages %}
+      {% for message in messages %}
+        {% if forloop.last %}  <!-- Show only the last message -->
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    <!-- create -->
+    <form method="post" class="inline">{% csrf_token %}
+      <input type="hidden" name="action" value="create">
+      <input class="small" name="username"    placeholder="Username">
+      <input class="small" name="password"    placeholder="Password">
+      <input class="small" name="userEmail"   placeholder="Email">
+      <input class="small" name="firstName"   placeholder="First name">
+      <input class="small" name="lastName"    placeholder="Last name">
+        <input class="small" name="phoneNumber" placeholder="Phone #">
+      <input class="small" name="homeAddress" placeholder="Home address">
+      <br>
+        <input type="radio" id="Admin" name="accountType" value=0>
+        <label for="Admin">Admin</label><br>
+        <input type="radio" id="Instructor" name="accountType" value=1>
+        <label for="Instructor">Instructor</label><br>
+        <input type="radio" id="TA" name="accountType" value=2>
+        <label for="TA">TA</label>
+      <button>Add User</button>
+    </form>
+
+    <div id="user‑panel">
+      {% for u in users %}
+        <details {% if forloop.first %}open{% endif %}>
+          <summary>{{ u.firstName }} {{ u.lastName }}</summary>
+
+          <div style="margin-left:14px">
+            Email: {{ u.userEmail }}<br>
+            Phone #: {{ u.phoneNumber|default:'N/A' }}<br>
+            Role: {% if u.accountType == 2 %}TA{% elif u.accountType == 1 %}Instructor{% else %}Admin{% endif %}
+
+            <!-- inline edit -->
+            <form method="post" class="inline" style="margin-top:4px">{% csrf_token %}
+                <input type="hidden" name ="action" value="edit">
+                <input type="hidden" name = "pk" value = {{ u.pk }}>
+              <input class="small" name="username" placeholder="Edit username">
+              <input class="small" name="userEmail" placeholder="Edit Email">
+              <input class="small" name="firstName" placeholder="Edit First Name">
+              <input class="small" name="lastName" placeholder="Edit Last Name">
+              <input class="small" name="homeAddress" placeholder="Edit address">
+              <input class="small" name="phoneNumber" placeholder="New phone">
+              <br>
+                <div>
+                  <input type="radio" id="Admin_{{ u.pk }}" name="accountType" value="0"
+                         {% if u.accountType == 0 %}checked{% endif %}>
+                  <label for="Admin_{{ u.pk }}">Admin</label><br>
+
+                  <input type="radio" id="Instructor_{{ u.pk }}" name="accountType" value="1"
+                         {% if u.accountType == 1 %}checked{% endif %}>
+                  <label for="Instructor_{{ u.pk }}">Instructor</label><br>
+
+                  <input type="radio" id="TA_{{ u.pk }}" name="accountType" value="2"
+                         {% if u.accountType == 2 %}checked{% endif %}>
+                  <label for="TA_{{ u.pk }}">TA</label>
+                </div>
+           <button title="Save">Save</button>
+            </form>
+
+            <!-- delete -->
+            <form method="post" class="inline">{% csrf_token %}
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="pk" value="{{ u.pk }}">
+              <button title="Delete">Delete</button>
+            </form>
+          </div>
+        </details>
+      {% empty %}
+        <p>No users yet.</p>
+      {% endfor %}
+    </div>
+  </main>
+</body>
+</html>

@@ -12,9 +12,9 @@ class AccountFeatures:
     #Account Type and phone number can be left blank and default to 0
     @staticmethod
     def create_user(username : str, password : str, user_email: str,
-                    first_name: str, last_name: str, home_address: str, account_type: int= 0, phone_number: int =0):
+                    first_name: str, last_name: str, home_address: str = "", account_type: int= 0, phone_number: int =0):
         #Account creation happens here
-        user = User.objects.create(username=username,
+        user = User.objects.create_user(username=username,
                                    password=password, userEmail=user_email,
                                    phoneNumber=phone_number, firstName=first_name,
                                    lastName=last_name, homeAddress = home_address, accountType=account_type)
@@ -50,29 +50,39 @@ class AccountFeatures:
             #The primary key for the account is used to retrieve the appropriate account
             user = User.objects.get(pk = user_id)
 
+            print("\n--- BEFORE CHANGES ---")
+            print(f"Username: {user.username}")
+            print(f"Email: {user.userEmail}")
+            print(f"Account Type: {user.accountType}")
+
             #This chain of if statements check which fields is desired to change
             #For example, if no new username is given,
             # it skips that field and focuses on other fields that need to be changed
-            if username is not "":
+            if username != "":
                 user.username = username
-            if password is not "":
+            if password != "":
                 user.password = password
-            if user_email is not "":
+            if user_email != "":
                 user.userEmail = user_email
             if phone_number is not None:
                 user.phoneNumber = phone_number
-            if first_name is not "":
+            if first_name != "":
                 user.firstName = first_name
-            if last_name is not "":
+            if last_name != "":
                 user.lastName = last_name
             if account_type is not None:
                 user.accountType = account_type
-            if home_address is not "":
+            if home_address != "":
                 user.homeAddress = home_address
 
             #saves the current user instance
             user.save()
-            return user
+
+            print("\n--- AFTER CHANGES ---")
+            print(f"Username: {user.username}")
+            print(f"Email: {user.userEmail}")
+            print(f"Account Type: {user.accountType}\n")
+            return user.pk
         #Error check if the account does not exist, likely not needed
         except User.DoesNotExist:
             return None
