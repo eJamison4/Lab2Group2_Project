@@ -26,7 +26,6 @@ class SkillsFeatures:
             return False
         if not isinstance(inSkill, skills):
             raise exception("invalid inSkill")
-
         inSkill.delete()
         return True
 
