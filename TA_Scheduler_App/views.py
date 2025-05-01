@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views import View
 
 
-from TA_Scheduler_App.models import User, Course, Section, Lab, Assignment
+from TA_Scheduler_App.models import User, Course, Section, Assignment
 from TA_Scheduler_App.account_features import AccountFeatures
 from TA_Scheduler_App.courseFeatures import CourseFeatures
 

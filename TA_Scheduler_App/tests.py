@@ -1,6 +1,6 @@
 # Imports the TestCase framework.  Allows each test case to act isolated from each other.
 from django.test import TestCase
-from TA_Scheduler_App.models import Section, Course, Lab, User
+from TA_Scheduler_App.models import Section, Course, User
 from TA_Scheduler_App.courseFeatures import CourseFeatures
 from TA_Scheduler_App.account_features import AccountFeatures
 
@@ -26,14 +26,14 @@ class testCourseFeatures(TestCase):
         self.assertEqual(section.courseForeignKey.courseName, "yugioh class")
         self.assertEqual(Section.objects.count(), 1)
 
-    def testLabCreation(self):
-        course = self.service.create_course(self, courseName="yugioh class")
-
-        lab = self.service.create_lab(self, course, "time to duel")
-
-        self.assertEqual(lab.labTime, "time to duel")
-        self.assertEqual(lab.courseForeignKey.courseName, "yugioh class")
-        self.assertEqual(Lab.objects.count(), 1)
+    # def testLabCreation(self):
+    #     course = self.service.create_course(self, courseName="yugioh class")
+    #
+    #     lab = self.service.create_lab(self, course, "time to duel")
+    #
+    #     self.assertEqual(lab.labTime, "time to duel")
+    #     self.assertEqual(lab.courseForeignKey.courseName, "yugioh class")
+    #     self.assertEqual(Lab.objects.count(), 1)
 
     def testCourseDelete(self):
         course = self.service.create_course(self, courseName="yugioh class")
@@ -55,16 +55,16 @@ class testCourseFeatures(TestCase):
 
         self.assertEqual(Section.objects.count(), 0)
 
-    def testLabDelete(self):
-        course = self.service.create_course(self, courseName="yugioh class")
-
-        lab = self.service.create_lab(self, course, "time to duel")
-
-        self.assertEqual(Lab.objects.count(), 1)
-
-        self.service.delete_lab(self, labKey=lab.pk)
-
-        self.assertEqual(Lab.objects.count(), 0)
+    # def testLabDelete(self):
+    #     course = self.service.create_course(self, courseName="yugioh class")
+    #
+    #     lab = self.service.create_lab(self, course, "time to duel")
+    #
+    #     self.assertEqual(Lab.objects.count(), 1)
+    #
+    #     self.service.delete_lab(self, labKey=lab.pk)
+    #
+    #     self.assertEqual(Lab.objects.count(), 0)
 
     def testCourseUpdateNoArgument(self):
         course = self.service.create_course(self, courseName="yugioh class")
@@ -95,19 +95,19 @@ class testCourseFeatures(TestCase):
 
         self.assertNotEqual(section.sectionTime, "")
 
-    def testLabUpdate(self):
-        course = self.service.create_course(self, courseName="yugioh class")
-        lab = self.service.create_lab(self, course, "time to duel")
-        lab = self.service.edit_lab(self, labKey=lab.pk, newLabTime="time to MTG")
-        self.assertEqual(lab.labTime, "time to MTG")
-
-    def testLabUpdateNoArgument(self):
-        course = self.service.create_course(self, courseName="yugioh class")
-        lab = self.service.create_lab(self, course, "time to duel")
-
-        lab = self.service.edit_lab(self, labKey=lab.pk)
-
-        self.assertNotEqual(lab.labTime, "")
+    # def testLabUpdate(self):
+    #     course = self.service.create_course(self, courseName="yugioh class")
+    #     lab = self.service.create_lab(self, course, "time to duel")
+    #     lab = self.service.edit_lab(self, labKey=lab.pk, newLabTime="time to MTG")
+    #     self.assertEqual(lab.labTime, "time to MTG")
+    #
+    # def testLabUpdateNoArgument(self):
+    #     course = self.service.create_course(self, courseName="yugioh class")
+    #     lab = self.service.create_lab(self, course, "time to duel")
+    #
+    #     lab = self.service.edit_lab(self, labKey=lab.pk)
+    #
+    #     self.assertNotEqual(lab.labTime, "")
 
 
 class TestAccountFeatures(TestCase):
