@@ -9,8 +9,8 @@ class CourseFeatures:
         return course
 
     @staticmethod
-    def create_section(courseForeignKey:Course, sectionData:str):
-        section = Section.objects.create(courseForeignKey=courseForeignKey, sectionTime=sectionData)
+    def create_section(courseForeignKey:Course, sectionData:str=None):
+        section = Section.objects.create(course=courseForeignKey, sectionCode=sectionData)
         section.save()
         return section
 
