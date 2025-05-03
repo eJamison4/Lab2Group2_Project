@@ -1,5 +1,5 @@
 from django.test import TestCase
-from TA_Scheduler_App.teacher_to_TA_features import teacher_to_TA_features as relationFeatures
+from TA_Scheduler_App.relation_features import teacher_to_TA_features as relationFeatures
 from TA_Scheduler_App.models import User, teacherToTA
 
 
