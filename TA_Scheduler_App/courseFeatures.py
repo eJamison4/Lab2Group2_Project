@@ -4,12 +4,35 @@ class CourseFeatures:
 
     @staticmethod
     def create_course(courseName:str):
+        if courseName is None or courseName is '':
+            raise Exception('no')
+
+        a = None
+        try:
+            a = Course.objects.get(courseName=courseName)
+        except Course.MultipleObjectsReturned:
+            raise Exception("something is really wrong")
+        except Course.DoesNotExist:
+            pass
+
+        if a is not None:
+            return False
+
         course = Course.objects.create(courseName=courseName)
         course.save()
         return course
 
     @staticmethod
     def create_section(courseForeignKey:Course, sectionData:str=None):
+        if courseForeignKey is None:
+            return False
+
+        if sectionData is None:
+            return False
+
+        if not isinstance(courseForeignKey,Course):
+            raise Exception('not a course')
+
         section = Section.objects.create(course=courseForeignKey, sectionCode=sectionData)
         section.save()
         return section
@@ -32,6 +55,8 @@ class CourseFeatures:
 
     @staticmethod
     def delete_section(sectionKey:int):
+        if not isinstance(sectionKey,int):
+            return False
         try:
             section = Section.objects.get(pk=sectionKey)
             section.delete()
@@ -51,6 +76,9 @@ class CourseFeatures:
 
     @staticmethod
     def edit_course(courseKey:int, newCourseName:str=""):
+        if not isinstance(courseKey,int) or not isinstance(newCourseName,str):
+            return False
+
         try:
             course = Course.objects.get(pk=courseKey)
         except Course.DoesNotExist:
@@ -65,6 +93,9 @@ class CourseFeatures:
 
     @staticmethod
     def edit_section(sectionKey:int, newSectionTime:str=None):
+        if not isinstance(sectionKey,int):
+            return False
+
         try:
             section = Section.objects.get(pk=sectionKey)
         except Section.DoesNotExist:
