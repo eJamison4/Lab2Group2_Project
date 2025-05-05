@@ -76,7 +76,7 @@ class CourseFeatures:
         return course
 
     @staticmethod
-    def edit_section(sectionKey:int, newSectionCode: str,newInstructor: str):
+    def edit_section(sectionKey: int, newSectionCode: str = "", newInstructor: str = ""):
         try:
             section = Section.objects.get(pk=sectionKey)
         except Section.DoesNotExist:
