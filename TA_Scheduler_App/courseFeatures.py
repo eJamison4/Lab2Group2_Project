@@ -82,7 +82,7 @@ class CourseFeatures:
         except Section.DoesNotExist:
             return False
 
-        if newSectionCode and newSectionCode.strip():
+        if  newSectionCode.strip():
             section.sectionCode = newSectionCode.strip()
             section.save()
         if newInstructor is not None:  # allow blank strings
