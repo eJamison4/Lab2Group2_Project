@@ -66,7 +66,7 @@ class CourseFeatures:
             course = Course.objects.get(pk=courseKey)
         except Course.DoesNotExist:
             return False
-        if newCourseName and newCourseName.strip():
+        if newCourseName.strip():
             course.courseName = newCourseName.strip()
             course.save()
         if newSemester and newSemester.strip():
