@@ -69,7 +69,7 @@ class CourseFeatures:
         if newCourseName.strip():
             course.courseName = newCourseName.strip()
             course.save()
-        if newSemester and newSemester.strip():
+        if newSemester.strip():
             course.semester = newSemester.strip()
             course.save()
 
