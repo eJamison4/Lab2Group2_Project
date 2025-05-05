@@ -115,8 +115,7 @@ class Account(View):
 
                 if (new_data["new_username"] == "" or new_data["new_password"] == "" or
                         new_data["new_email"] == "" or
-                        new_data["new_first_name"] == "" or new_data["new_last_name"] == "" or
-                        new_data["new_home_address"] == ""):
+                        new_data["new_first_name"] == "" or new_data["new_last_name"] == ""):
                     messages.error(request, "Creation Error: Please fill all fields")
                     return redirect('accounts')
 
