@@ -85,7 +85,7 @@ class CourseFeatures:
         if  newSectionCode.strip():
             section.sectionCode = newSectionCode.strip()
             section.save()
-        if newInstructor is not None:  # allow blank strings
+        if newInstructor.strip():  # allow blank strings
             section.instructor = newInstructor
             section.save()
         return section
