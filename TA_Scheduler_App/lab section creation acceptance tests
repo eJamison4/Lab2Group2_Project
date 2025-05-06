@@ -35,7 +35,7 @@ class SectionAcceptanceTests(TestCase):
     def test_get_add_section_page(self):
         response = self.client.get(f"/courses/{self.course.id}/add-section/")
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Add Section")  # assuming your template includes this
+        self.assertContains(response, "Add Section")  # template this
 #success
     def test_post_create_section_successfully(self):
         response = self.client.post(f"/courses/{self.course.id}/add-section/", {
@@ -43,7 +43,7 @@ class SectionAcceptanceTests(TestCase):
             "instructor": f"{self.ta.firstName} {self.ta.lastName}",
         })
 
-        self.assertEqual(response.status_code, 302)  # assuming it redirects on success
+        self.assertEqual(response.status_code, 302)  # should redirect on success
         self.assertTrue(Section.objects.filter(course=self.course, sectionCode="301").exists())
         section = Section.objects.get(course=self.course, sectionCode="301")
         self.assertEqual(section.instructor, "TA User")
