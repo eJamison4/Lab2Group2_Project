@@ -61,7 +61,7 @@ class AccountFeatures:
             if username != "":
                 user.username = username
             if password != "":
-                user.password = password
+                user.set_password(password)
             if user_email != "":
                 user.userEmail = user_email
             if phone_number is not None:
