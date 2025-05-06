@@ -1,4 +1,5 @@
 from django.test import TestCase, Client
+from TA_Scheduler_App.models import User
 
 class LoginTestCase(TestCase):
     def setUp(self):
