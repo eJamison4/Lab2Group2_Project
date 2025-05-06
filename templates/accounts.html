@@ -148,7 +148,7 @@
           <div style="margin-left:14px">
             Email: {{ u.userEmail }}<br>
             Username: {{ u.username }}<br>
-            Role: {% if u.accountType == 2 %}TA{% elif u.accountType == 1 %}Instructor{% else %}Admin{% endif %}
+            Role: {% if u.accountType == 0 %}TA{% elif u.accountType == 1 %}Instructor{% else %}Admin{% endif %}
 
             <a href="#edit-{{u.id}}">✏️ Edit</a>
 
@@ -178,16 +178,16 @@
               <input name="homeAddress" placeholder="New Address">
               <div class="radio-row">
                 <label>
-                    <input type="radio" name="accountType" value="0"
-                              {% if u.accountType == 0 %}checked{% endif %}>
+                    <input type="radio" name="accountType" value="2"
+                              {% if u.accountType == 2 %}checked{% endif %}>
                     Admin</label>
                 <label>
                     <input type="radio" name="accountType" value="1"
                               {% if u.accountType == 1 %}checked{% endif %}
                 > Instructor</label>
                 <label>
-                    <input type="radio" name="accountType" value="2"
-                           {% if u.accountType == 2 %}checked{% endif %}
+                    <input type="radio" name="accountType" value="0"
+                           {% if u.accountType == 0 %}checked{% endif %}
                     > TA</label>
               </div>
               <button>Save</button>
@@ -216,9 +216,9 @@
         <input name="phoneNumber" placeholder="Phone # (Optional)">
         <input name="homeAddress" placeholder="Home address (Optional)">
         <div class="radio-row">
-          <label><input type="radio" name="accountType" value="0" checked> Admin</label>
+          <label><input type="radio" name="accountType" value="2" checked> Admin</label>
           <label><input type="radio" name="accountType" value="1"> Instructor</label>
-          <label><input type="radio" name="accountType" value="2"> TA</label>
+          <label><input type="radio" name="accountType" value="0"> TA</label>
         </div>
         <button>Create</button>
       </form>
