@@ -7,24 +7,25 @@ from TA_Scheduler_App.account_features import AccountFeatures
 # Create your tests here.
 
 
-class testCourseFeatures(TestCase):
+class TestCourseFeatures(TestCase):
 
     def setUp(self):
         self.service = CourseFeatures()
 
     def testCourseCreation(self):
-        course = self.service.create_course(self, courseName="yugioh class")
-        self.assertEqual(course.courseName, "yugioh class")
+        course = self.service.create_course(courseName="yugioh class",semester="Fall 2025",)
+
         self.assertEqual(Course.objects.count(), 1)
+        self.assertEqual(course.courseName, "yugioh class")
+        self.assertEqual(course.semester, "Fall 2025")
 
     def testSectionCreation(self):
-        course = self.service.create_course(self, courseName="yugioh class")
-
-        section = self.service.create_section(self, course, "time to duel")
-
-        self.assertEqual(section.sectionTime, "time to duel")
-        self.assertEqual(section.courseForeignKey.courseName, "yugioh class")
+        course = self.service.create_course(courseName="yugioh class",semester="Fall 2025",)
+        section = self.service.create_section(course, sectionCode= "SEC-001",instructor="")
         self.assertEqual(Section.objects.count(), 1)
+        self.assertEqual(section.sectionCode, "SEC-001")
+        self.assertEqual(section.course, course)
+
 
     # def testLabCreation(self):
     #     course = self.service.create_course(self, courseName="yugioh class")
@@ -36,23 +37,16 @@ class testCourseFeatures(TestCase):
     #     self.assertEqual(Lab.objects.count(), 1)
 
     def testCourseDelete(self):
-        course = self.service.create_course(self, courseName="yugioh class")
-
+        course = self.service.create_course( courseName="yugioh class",semester= "Fall 2025")
         self.assertEqual(Course.objects.count(), 1)
-
-        self.service.delete_course(self, courseKey=course.pk)
-
+        self.service.delete_course(courseKey=course.pk)
         self.assertEqual(Course.objects.count(), 0)
 
     def testSectionDelete(self):
-        course = self.service.create_course(self, courseName="yugioh class")
-
-        section = self.service.create_section(self, course, "time to duel")
-
+        course = self.service.create_course(courseName="yugioh class",semester= "Fall 2025")
+        section = self.service.create_section( course, "SEC-001")
         self.assertEqual(Section.objects.count(), 1)
-
-        self.service.delete_section(self, sectionKey=section.pk)
-
+        self.service.delete_section( sectionKey=section.pk)
         self.assertEqual(Section.objects.count(), 0)
 
     # def testLabDelete(self):
@@ -67,33 +61,30 @@ class testCourseFeatures(TestCase):
     #     self.assertEqual(Lab.objects.count(), 0)
 
     def testCourseUpdateNoArgument(self):
-        course = self.service.create_course(self, courseName="yugioh class")
-        course = self.service.edit_course(self, courseKey=course.pk)
-
-        self.assertNotEqual(course.courseName, "")
+        course = self.service.create_course(courseName="yugioh class",semester = "Fall 2025")
+        edit = self.service.edit_course(courseKey=course.pk)
+        self.assertEqual(edit.courseName, "yugioh class")
+        self.assertEqual(edit.semester, "Fall 2025")
 
     def testCourseUpdate(self):
-        course = self.service.create_course(self, courseName="yugioh class")
-
-        course = self.service.edit_course(self, courseKey=course.pk, newCourseName="MTG class")
-
-        self.assertEqual(course.courseName, "MTG class")
+        course = self.service.create_course(courseName="yugioh class",semester = "Fall 2025")
+        edited = self.service.edit_course(courseKey=course.pk,newCourseName="MTG class",)
+        self.assertEqual(edited.courseName, "MTG class")
 
     def testSectionUpdate(self):
-        course = self.service.create_course(self, courseName="yugioh class")
-        section = self.service.create_section(self, course, "time to duel")
+        course = self.service.create_course(courseName="yugioh class",semester= "Fall 2025")
+        section = self.service.create_section(course, "SEC-001",instructor="")
 
-        section = self.service.edit_section(self, sectionKey=section.pk, newSectionTime="time to MTG")
+        edit = self.service.edit_section(sectionKey=section.pk, newSectionCode="SEC-002",newInstructor= "J-Rock")
 
-        self.assertEqual(section.sectionTime, "time to MTG")
+        self.assertEqual(edit.sectionCode, "SEC-002")
+        self.assertEqual(edit.instructor, "J-Rock")
 
     def testSectionUpdateNoArgument(self):
-        course = self.service.create_course(self, courseName="yugioh class")
-        section = self.service.create_section(self, course, "time to duel")
-
-        section = self.service.edit_section(self, sectionKey=section.pk)
-
-        self.assertNotEqual(section.sectionTime, "")
+        course = self.service.create_course(courseName="yugioh class",semester = "Fall 2025")
+        section = self.service.create_section(course, "SEC-001",instructor="")
+        edit = self.service.edit_section(sectionKey=section.pk,newSectionCode="",newInstructor= "")
+        self.assertNotEqual(edit.sectionCode, "")
 
     # def testLabUpdate(self):
     #     course = self.service.create_course(self, courseName="yugioh class")
