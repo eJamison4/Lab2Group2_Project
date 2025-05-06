@@ -7,7 +7,7 @@ from TA_Scheduler_App.account_features import AccountFeatures
 # Create your tests here.
 
 
-class testCourseFeatures(TestCase):
+class TestCourseFeatures(TestCase):
 
     def setUp(self):
         self.service = CourseFeatures()
@@ -15,7 +15,10 @@ class testCourseFeatures(TestCase):
     def testCourseCreation(self):
         course = self.service.create_course(courseName="yugioh class")
         self.assertEqual(course.courseName, "yugioh class")
+
         self.assertEqual(Course.objects.count(), 1)
+        self.assertEqual(course.courseName, "yugioh class")
+        self.assertEqual(course.semester, "Fall 2025")
 
     def testSectionCreation(self):
         course = self.service.create_course(courseName="yugioh class")
@@ -25,6 +28,9 @@ class testCourseFeatures(TestCase):
         self.assertEqual(section.sectionCode, "time to duel")
         self.assertEqual(section.course.courseName, "yugioh class")
         self.assertEqual(Section.objects.count(), 1)
+        self.assertEqual(section.sectionCode, "SEC-001")
+        self.assertEqual(section.course, course)
+
 
     # def testLabCreation(self):
     #     course = self.service.create_course(self, courseName="yugioh class")
@@ -52,7 +58,6 @@ class testCourseFeatures(TestCase):
         self.assertEqual(Section.objects.count(), 1)
 
         self.service.delete_section(sectionKey=section.pk)
-
         self.assertEqual(Section.objects.count(), 0)
 
     # def testLabDelete(self):
@@ -85,7 +90,8 @@ class testCourseFeatures(TestCase):
 
         section = self.service.edit_section(sectionKey=section.pk, newSectionTime="time to MTG")
 
-        self.assertEqual(section.sectionTime, "time to MTG")
+        self.assertEqual(edit.sectionCode, "SEC-002")
+        self.assertEqual(edit.instructor, "J-Rock")
 
     def testSectionUpdateNoArgument(self):
         course = self.service.create_course(courseName="yugioh class")

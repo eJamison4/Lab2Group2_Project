@@ -1,8 +1,21 @@
 from TA_Scheduler_App.models import Section,Course
 
 class CourseFeatures:
+    """
+    Model snapshot (May 01 2025)
+    @Zach Fornero: Put this here so I didn't have to switch files all the time figured it would be helpful
+        class Course(models.Model):
+            courseName = models.CharField(max_length=256)
+            semester   = models.CharField(max_length=256)
 
+        class Section(models.Model):
+            course       = models.ForeignKey(Course, on_delete=models.CASCADE,
+                                             related_name="section_set")
+            sectionCode  = models.CharField(max_length=20)
+            instructor   = models.CharField(max_length=256, blank=True)
+    """
     @staticmethod
+
     def create_course(courseName:str):
         if courseName is None or courseName is '':
             raise Exception('no')
@@ -23,6 +36,7 @@ class CourseFeatures:
         return course
 
     @staticmethod
+
     def create_section(courseForeignKey:Course, sectionData:str=None):
         if courseForeignKey is None:
             return False
@@ -35,6 +49,7 @@ class CourseFeatures:
 
         section = Section.objects.create(course=courseForeignKey, sectionCode=sectionData)
         section.save()
+
         return section
 
     # @staticmethod
@@ -75,36 +90,39 @@ class CourseFeatures:
     #         return False
 
     @staticmethod
+
     def edit_course(courseKey:int, newCourseName:str=""):
         if not isinstance(courseKey,int) or not isinstance(newCourseName,str):
             return False
-
         try:
             course = Course.objects.get(pk=courseKey)
         except Course.DoesNotExist:
             return False
-
-
-        if newCourseName is not '' and newCourseName is not None:
-            course.courseName = newCourseName
+        if newCourseName.strip():
+            course.courseName = newCourseName.strip()
+            course.save()
+        if newSemester.strip():
+            course.semester = newSemester.strip()
             course.save()
 
         return course
 
     @staticmethod
+
     def edit_section(sectionKey:int, newSectionTime:str=None):
         if not isinstance(sectionKey,int):
             return False
-
         try:
             section = Section.objects.get(pk=sectionKey)
         except Section.DoesNotExist:
             return False
 
-        if newSectionTime is not None and newSectionTime is not '':
-            section.sectionTime = newSectionTime
+        if  newSectionCode.strip():
+            section.sectionCode = newSectionCode.strip()
             section.save()
-
+        if newInstructor.strip():  # allow blank strings
+            section.instructor = newInstructor
+            section.save()
         return section
 
     #
