@@ -1,4 +1,4 @@
-# TA_Scheduler_App/test_section_acceptance.py
+TA_Scheduler_App/test_section_acceptance.py
 
 from django.test import TestCase, Client
 from django.urls import reverse
