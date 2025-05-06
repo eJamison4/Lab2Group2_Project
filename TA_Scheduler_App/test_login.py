@@ -4,6 +4,16 @@ class LoginTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         self.login_url = '/'  # root URL based on your urls.py
+        User = get_user_model()
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='testpass',
+            userEmail='test@example.com',
+            firstName='Test',
+            lastName='User',
+            homeAddress='123 Main St',
+            accountType=1  # Example: 1 = Teacher
+        )
 
     def test_login_page_loads_correctly(self):
         response = self.client.get(self.login_url)
