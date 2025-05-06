@@ -1,0 +1,62 @@
+# TA_Scheduler_App/test_section_acceptance.py
+
+from django.test import TestCase, Client
+from django.urls import reverse
+from TA_Scheduler_App.models import User, Course, Section, Assignment
+
+class SectionAcceptanceTests(TestCase):
+
+    def setUp(self):
+        # admin user
+        self.admin = User.objects.create_user(
+            username="admin_user",
+            password="adminpass",
+            accountType=2,
+            firstName="Admin",
+            lastName="User",
+            userEmail="admin@example.com"
+        )
+
+        # TA user
+        self.ta = User.objects.create_user(
+            username="ta_user",
+            password="tapass",
+            accountType=0,
+            firstName="TA",
+            lastName="User",
+            userEmail="ta@example.com"
+        )
+
+        # Create a course
+        self.course = Course.objects.create(courseName="CS101", semester="Fall 2025")
+
+        self.client = Client()
+        self.client.login(username="admin_user", password="adminpass")
+
+    def test_get_add_section_page(self):
+        response = self.client.get(f"/courses/{self.course.id}/add-section/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Add Section")  # assuming your template includes this
+#success
+    def test_post_create_section_successfully(self):
+        response = self.client.post(f"/courses/{self.course.id}/add-section/", {
+            "sectionCode": "301",
+            "instructor": f"{self.ta.firstName} {self.ta.lastName}",
+        })
+
+        self.assertEqual(response.status_code, 302)  # assuming it redirects on success
+        self.assertTrue(Section.objects.filter(course=self.course, sectionCode="301").exists())
+        section = Section.objects.get(course=self.course, sectionCode="301")
+        self.assertEqual(section.instructor, "TA User")
+#fail
+    def test_non_admin_cannot_create_section(self):
+        self.client.logout()
+        self.client.login(username="ta_user", password="tapass")
+
+        response = self.client.post(f"/courses/{self.course.id}/add-section/", {
+            "sectionCode": "999",
+            "instructor": "Fake Instructor",
+        })
+
+        self.assertNotEqual(response.status_code, 302)
+        self.assertFalse(Section.objects.filter(sectionCode="999").exists())
