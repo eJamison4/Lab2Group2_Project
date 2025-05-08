@@ -167,6 +167,7 @@
           </div>
         </details>
 
+          {% if is_admin %}
           <div id="edit-{{u.id}}" class="modal">
           <div class="box">
             <a href="#" class="close">&times;</a>
@@ -199,7 +200,8 @@
               <button>Save</button>
             </form>
           </div>
-        </div>
+          </div>
+          {% endif %}
 
 
       {% empty %}
@@ -207,29 +209,30 @@
       {% endfor %}
     </div>
   </main>
-
-<div id="create" class="modal">
-    <div class="box">
-      <a href="#" class="close">&times;</a>
-      <h3>Create User</h3>
-      <form method="post" action = "{% url "accounts" %}">{% csrf_token %}
-        <input type="hidden" name="action" value="create">
-        <input name="username"    placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <input type="email"    name="userEmail"  placeholder="Email" required>
-        <input name="firstName"   placeholder="First name" required>
-        <input name="lastName"    placeholder="Last name" required>
-        <input name="phoneNumber" placeholder="Phone # (Optional)">
-        <input name="homeAddress" placeholder="Home address (Optional)">
-        <div class="radio-row">
-          <label><input type="radio" name="accountType" value="2" checked> Admin</label>
-          <label><input type="radio" name="accountType" value="1"> Instructor</label>
-          <label><input type="radio" name="accountType" value="0"> TA</label>
+    {% if is_admin %}
+    <div id="create" class="modal">
+        <div class="box">
+          <a href="#" class="close">&times;</a>
+          <h3>Create User</h3>
+          <form method="post" action = "{% url "accounts" %}">{% csrf_token %}
+            <input type="hidden" name="action" value="create">
+            <input name="username"    placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="email"    name="userEmail"  placeholder="Email" required>
+            <input name="firstName"   placeholder="First name" required>
+            <input name="lastName"    placeholder="Last name" required>
+            <input name="phoneNumber" placeholder="Phone # (Optional)">
+            <input name="homeAddress" placeholder="Home address (Optional)">
+            <div class="radio-row">
+              <label><input type="radio" name="accountType" value="2" checked> Admin</label>
+              <label><input type="radio" name="accountType" value="1"> Instructor</label>
+              <label><input type="radio" name="accountType" value="0"> TA</label>
+            </div>
+            <button>Create</button>
+          </form>
         </div>
-        <button>Create</button>
-      </form>
-    </div>
-  </div>
+      </div>
+    {% endif %}
 
 </body>
 </html>
