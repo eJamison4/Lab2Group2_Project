@@ -12,7 +12,7 @@ class AccountFeatures:
     #Account Type and phone number can be left blank and default to 0
     @staticmethod
     def create_user(username : str, password : str, user_email: str,
-                    first_name: str, last_name: str, home_address: str = "", account_type: int= 0, phone_number: int =0):
+                    first_name: str, last_name: str, home_address: str = "", account_type: int= 2, phone_number: int =0):
         #Account creation happens here
         user = User.objects.create_user(username=username,
                                    password=password, userEmail=user_email,
