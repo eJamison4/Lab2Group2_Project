@@ -138,7 +138,9 @@
       {% endfor %}
     {% endif %}
 
+  {% if is_admin %}
     <a href="#create" class="btn">➕ Add User</a>
+  {% endif %}
 
     <div id="user‑panel">
       {% for u in users %}
@@ -150,14 +152,18 @@
             Username: {{ u.username }}<br>
             Role: {% if u.accountType == 0 %}TA{% elif u.accountType == 1 %}Instructor{% else %}Admin{% endif %}
 
-            <a href="#edit-{{u.id}}">✏️ Edit</a>
+            {% if is_admin %}
+                <a href="#edit-{{u.id}}">✏️ Edit</a>
+            {% endif %}
 
             <!-- delete -->
+          {% if is_admin %}
             <form method="post" class="inline">{% csrf_token %}
               <input type="hidden" name="action" value="delete">
               <input type="hidden" name="pk" value="{{ u.pk }}">
               <button title="Delete">Delete</button>
             </form>
+          {% endif %}
           </div>
         </details>
 

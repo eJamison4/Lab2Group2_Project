@@ -46,6 +46,7 @@ class TestAccountView(TestCase):
     #Leaving blanks for editing should not alter the respective fields
     def test_edit_blanks(self):
         # Create
+        self.client.login(username='Admin', password='Admin')
         self.client.post(reverse('accounts'), {
             "action": "create",
             "username": "bob",
@@ -78,6 +79,8 @@ class TestAccountView(TestCase):
     #Account creation should be rejected if the necessary fields are not provided
     #First name, last name, email, home address, username, and password are needed
     def test_create_blanks(self):
+        self.client.login(username='Admin', password='Admin')
+
         self.client.post(reverse('accounts'), {
             "action": "create",
             "username": "bob",
