@@ -25,8 +25,7 @@ class LoginTestCase(TestCase):
             'username': 'testuser',
             'password': 'testpass'
         })
-        # I think this should be an incorrect message because the backend doesn't look like it validates users yet
-        self.assertContains(response, "Either username or password is incorrect!")
+        self.assertNotContains(response, "Either username or password is incorrect!")
 
     def test_login_with_empty_fields(self):
         response = self.client.post(self.login_url, {
