@@ -8,7 +8,7 @@ from django.http import HttpResponseForbidden
 
 
 
-from TA_Scheduler_App.models import User, Course, Section, Lab, Assignment
+from TA_Scheduler_App.models import User, Course, Section, Assignment
 from TA_Scheduler_App.account_features import AccountFeatures
 from TA_Scheduler_App.courseFeatures import CourseFeatures
 
