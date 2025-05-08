@@ -36,7 +36,8 @@ class SectionAcceptanceTests(TestCase):
         response = self.client.get(f"/courses/{self.course.id}/add-section/")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Add Section")  # template this
-#success
+
+    # success
     def test_post_create_section_successfully(self):
         response = self.client.post(f"/courses/{self.course.id}/add-section/", {
             "sectionCode": "301",
@@ -47,7 +48,8 @@ class SectionAcceptanceTests(TestCase):
         self.assertTrue(Section.objects.filter(course=self.course, sectionCode="301").exists())
         section = Section.objects.get(course=self.course, sectionCode="301")
         self.assertEqual(section.instructor, "TA User")
-#fail
+
+    # fail
     def test_non_admin_cannot_create_section(self):
         self.client.logout()
         self.client.login(username="ta_user", password="tapass")
