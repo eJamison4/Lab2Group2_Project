@@ -30,9 +30,11 @@ class TestAccountView(TestCase):
             "action": "edit",
             "pk": bob.pk,
             "username": "bobby",
+            "password": "new password",
         })
         bob = User.objects.get(pk=bob.pk)
         self.assertEqual(bob.username, "bobby", msg="User name not updated")
+        self.assertEqual(bob.check_password("new password"), True, msg="Password not updated")
 
         #Delete
         self.client.post(reverse('accounts'), {

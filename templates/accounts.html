@@ -56,11 +56,56 @@
       overflow-y: auto;
       padding: 8px;
     }
-    #user‑panel details { margin: 4px 0; }
-    #user‑panel summary  { cursor: pointer; font-weight: 600; }
-    form.inline   { display: inline; }
-    input.small   { width: 120px; }
-    button        { padding: 4px 8px; margin-left: 4px; }
+    #user‑panel details {
+        margin: 4px 0;
+    }
+
+    #user‑panel summary  {
+        cursor: pointer; font-weight: 600;
+    }
+
+    form.inline   {
+        display: inline;
+    }
+    input.small   {
+        width: 120px;
+    }
+    button        {
+        padding: 4px 8px; margin-left: 4px;
+    }
+
+
+    .modal {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,.35);
+        justify-content: center; align-items: center; z-index: 1000;
+    }
+
+    .modal:target {
+        display: flex;
+    }
+
+
+    .modal .box   {
+        background: #fff; border: 1px solid #000;
+        border-radius: 4px; max-width: 500px;
+        width: 100%; padding: 16px;
+    }
+
+    .modal .close {
+        float: right; font-size: 24px;
+        text-decoration: none; color: #000;
+    }
+
+    .modal input[type=text],
+    .modal input[type=password],
+    .modal input[type=email]  {
+        width: 100%; margin: 4px 0 8px; padding: 4px;
+    }
+
+    .radio-row {
+        display: flex; gap: 10px; margin: 6px 0;
+    }
   </style>
 </head>
 <body>
@@ -85,32 +130,15 @@
     <h2>Accounts</h2>
     {% if messages %}
       {% for message in messages %}
-        {% if forloop.last %}  <!-- Show only the last message -->
+        {% if forloop.last %}
           <div class="alert alert-{{ message.tags }}">
             {{ message }}
           </div>
         {% endif %}
       {% endfor %}
     {% endif %}
-    <!-- create -->
-    <form method="post" class="inline">{% csrf_token %}
-      <input type="hidden" name="action" value="create">
-      <input class="small" name="username"    placeholder="Username">
-      <input class="small" name="password"    placeholder="Password">
-      <input class="small" name="userEmail"   placeholder="Email">
-      <input class="small" name="firstName"   placeholder="First name">
-      <input class="small" name="lastName"    placeholder="Last name">
-        <input class="small" name="phoneNumber" placeholder="Phone #">
-      <input class="small" name="homeAddress" placeholder="Home address">
-      <br>
-        <input type="radio" id="Admin" name="accountType" value=0>
-        <label for="Admin">Admin</label><br>
-        <input type="radio" id="Instructor" name="accountType" value=1>
-        <label for="Instructor">Instructor</label><br>
-        <input type="radio" id="TA" name="accountType" value=2>
-        <label for="TA">TA</label>
-      <button>Add User</button>
-    </form>
+
+    <a href="#create" class="btn">➕ Add User</a>
 
     <div id="user‑panel">
       {% for u in users %}
@@ -119,35 +147,10 @@
 
           <div style="margin-left:14px">
             Email: {{ u.userEmail }}<br>
-            Phone #: {{ u.phoneNumber|default:'N/A' }}<br>
-            Role: {% if u.accountType == 2 %}TA{% elif u.accountType == 1 %}Instructor{% else %}Admin{% endif %}
+            Username: {{ u.username }}<br>
+            Role: {% if u.accountType == 0 %}TA{% elif u.accountType == 1 %}Instructor{% else %}Admin{% endif %}
 
-            <!-- inline edit -->
-            <form method="post" class="inline" style="margin-top:4px">{% csrf_token %}
-                <input type="hidden" name ="action" value="edit">
-                <input type="hidden" name = "pk" value = {{ u.pk }}>
-              <input class="small" name="username" placeholder="Edit username">
-              <input class="small" name="userEmail" placeholder="Edit Email">
-              <input class="small" name="firstName" placeholder="Edit First Name">
-              <input class="small" name="lastName" placeholder="Edit Last Name">
-              <input class="small" name="homeAddress" placeholder="Edit address">
-              <input class="small" name="phoneNumber" placeholder="New phone">
-              <br>
-                <div>
-                  <input type="radio" id="Admin_{{ u.pk }}" name="accountType" value="0"
-                         {% if u.accountType == 0 %}checked{% endif %}>
-                  <label for="Admin_{{ u.pk }}">Admin</label><br>
-
-                  <input type="radio" id="Instructor_{{ u.pk }}" name="accountType" value="1"
-                         {% if u.accountType == 1 %}checked{% endif %}>
-                  <label for="Instructor_{{ u.pk }}">Instructor</label><br>
-
-                  <input type="radio" id="TA_{{ u.pk }}" name="accountType" value="2"
-                         {% if u.accountType == 2 %}checked{% endif %}>
-                  <label for="TA_{{ u.pk }}">TA</label>
-                </div>
-           <button title="Save">Save</button>
-            </form>
+            <a href="#edit-{{u.id}}">✏️ Edit</a>
 
             <!-- delete -->
             <form method="post" class="inline">{% csrf_token %}
@@ -157,10 +160,70 @@
             </form>
           </div>
         </details>
+
+          <div id="edit-{{u.id}}" class="modal">
+          <div class="box">
+            <a href="#" class="close">&times;</a>
+            <h3>Edit {{ u.firstName }}</h3>
+            <label> To keep old details, leave blank</label>
+            <form method="post" action="{% url "accounts" %}">{% csrf_token %}
+              <input type="hidden" name="action" value="edit">
+              <input type="hidden" name="pk" value="{{ u.id }}">
+              <input name="username" placeholder="New Username">
+                <input type="password" name="password" placeholder ="New Password">
+              <input type="email" name="userEmail" placeholder="New Email">
+              <input name="firstName" placeholder = "New First Name">
+              <input name="lastName" placeholder = "New Last Name">
+              <input name="phoneNumber" placeholder ="New Phone #">
+              <input name="homeAddress" placeholder="New Address">
+              <div class="radio-row">
+                <label>
+                    <input type="radio" name="accountType" value="2"
+                              {% if u.accountType == 2 %}checked{% endif %}>
+                    Admin</label>
+                <label>
+                    <input type="radio" name="accountType" value="1"
+                              {% if u.accountType == 1 %}checked{% endif %}
+                > Instructor</label>
+                <label>
+                    <input type="radio" name="accountType" value="0"
+                           {% if u.accountType == 0 %}checked{% endif %}
+                    > TA</label>
+              </div>
+              <button>Save</button>
+            </form>
+          </div>
+        </div>
+
+
       {% empty %}
         <p>No users yet.</p>
       {% endfor %}
     </div>
   </main>
+
+<div id="create" class="modal">
+    <div class="box">
+      <a href="#" class="close">&times;</a>
+      <h3>Create User</h3>
+      <form method="post" action = "{% url "accounts" %}">{% csrf_token %}
+        <input type="hidden" name="action" value="create">
+        <input name="username"    placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <input type="email"    name="userEmail"  placeholder="Email" required>
+        <input name="firstName"   placeholder="First name" required>
+        <input name="lastName"    placeholder="Last name" required>
+        <input name="phoneNumber" placeholder="Phone # (Optional)">
+        <input name="homeAddress" placeholder="Home address (Optional)">
+        <div class="radio-row">
+          <label><input type="radio" name="accountType" value="2" checked> Admin</label>
+          <label><input type="radio" name="accountType" value="1"> Instructor</label>
+          <label><input type="radio" name="accountType" value="0"> TA</label>
+        </div>
+        <button>Create</button>
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>
