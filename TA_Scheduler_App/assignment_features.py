@@ -1,6 +1,6 @@
 from TA_Scheduler_App.models import Section, User, Assignment
 
-class assignment_features:
+class AssignmentFeatures:
 
     @staticmethod
     def create_assignment(self,inSection:Section,inUser:User):
