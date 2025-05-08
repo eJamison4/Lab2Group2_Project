@@ -5,7 +5,6 @@ class LoginTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         self.login_url = '/'  # root URL based on your urls.py
-        User = get_user_model()
         self.user = User.objects.create_user(
             username='testuser',
             password='testpass',
