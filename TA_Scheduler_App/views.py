@@ -291,7 +291,7 @@ class Assignments(View):
     def post(self, request, section=None, assignment=None):
         action = request.POST.get('action')
         if action == 'create':
-            assignment_features.create_assignment(self,section,request.user)
+            assignment_features.create_assignment(self, section, request.user)
             return redirect('courses')
         if action == 'delete':
             if assignment is not None:
