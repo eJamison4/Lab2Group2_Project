@@ -263,7 +263,7 @@ class Courses(View):
     def post(self, request):
         name = request.POST.get("courseName")
         if name:
-            CourseFeatures.create_course(courseName = name)
+            CourseFeatures.create_course(courseName=name)
         return redirect("courses")
 
 class AddSection(View):
