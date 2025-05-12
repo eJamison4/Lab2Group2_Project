@@ -4,12 +4,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views import View
+from django.http import HttpResponseForbidden
 
 
-from TA_Scheduler_App.models import User, Course, Section, Assignment
+from TA_Scheduler_App.assignment_features import assignment_features
+from TA_Scheduler_App.models import User, Course, Section, Assignment, teacherToTA
 from TA_Scheduler_App.account_features import AccountFeatures
 from TA_Scheduler_App.courseFeatures import CourseFeatures
-
+from TA_Scheduler_App.relation_features import teacher_to_TA_features as relationFeatures
+from TA_Scheduler_App.skills_features import SkillsFeatures
 
 
 
@@ -54,16 +57,22 @@ class Dashboard(LoginRequiredMixin, View):
             "is_admin": request.user.accountType == 2
         })
 
-class Account(View):
+class Account(LoginRequiredMixin, View):
+    login_url = '/'
     template_name = "accounts.html"
 
     def get(self, request):
         users = User.objects.all().order_by("id")
-        return render(request, self.template_name, {"users": users})
+        is_admin = request.user.is_authenticated and getattr(request.user, "accountType", 0) == 2
+        return render(request, self.template_name, {"users": users,
+                                                    "is_admin": is_admin})
 
     def post(self, request):
-        action = request.POST.get('action')
 
+        if not request.user.is_authenticated or request.user.accountType != 2:
+            return HttpResponseForbidden("Admins only.")
+
+        action = request.POST.get('action')
 
         try:
             if action == "create":
@@ -229,6 +238,9 @@ class Account(View):
                 primary_key = request.POST.get('pk')
                 if AccountFeatures.delete_account(user_id= primary_key) is True:
                     messages.success(request, "User deleted successfully")
+                    if request.user.is_authenticated and request.user.pk == int(primary_key):
+                        logout(request)
+                        return redirect("login")
                 else:
                     messages.error(request, "Deletion Error: User not found")
 
@@ -251,7 +263,7 @@ class Courses(View):
     def post(self, request):
         name = request.POST.get("courseName")
         if name:
-            Course.objects.create(courseName=name)
+            CourseFeatures.create_course(courseName=name)
         return redirect("courses")
 
 class AddSection(View):
@@ -269,3 +281,50 @@ class AddSection(View):
         return redirect("courses")
 
 
+
+class Assignments(View):
+    def get(self,request):
+        courses = Course.objects.all()
+        relations = teacherToTA.objects.all().filter(teacherIDF=request.user)
+        return render(request, 'courses.html', {'relations': relations, 'courses': courses})
+
+    def post(self, request, section=None, assignment=None):
+        action = request.POST.get('action')
+        if action == 'create':
+            assignment_features.create_assignment(self, section, request.user)
+            return redirect('courses')
+        if action == 'delete':
+            if assignment is not None:
+                assignment_features.delete_assignment(self, assignment.pk)
+
+        return redirect('course')
+
+
+
+class Skills(View):
+    def get(self,request):
+        skill = Skills.objects.all().filter(userId=request.user.pk)
+        return render(request, 'accounts.html', {'skills': skill})
+
+    def post(self, request, skillId=None, skillString=None):
+        action = request.POST.get('action')
+        if action == 'create':
+            if skillString is not None:
+                SkillsFeatures.create_skill(request.user, skillString)
+
+        if action == 'edit':
+            if skillId is not None and skillString is not None:
+                SkillsFeatures.edit_skill(skillId, skillString)
+
+        if action == 'delete':
+            if skillId is not None:
+                SkillsFeatures.delete_skill(skillId)
+
+
+
+class myAccount(View):
+    def get(self, request):
+        pass
+
+    def post(self, request):
+        pass
