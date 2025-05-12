@@ -326,5 +326,5 @@ class myAccount(View):
     def get(self,request):
         pass
 
-    def post(self,request):
+    def post(self, request):
         pass
