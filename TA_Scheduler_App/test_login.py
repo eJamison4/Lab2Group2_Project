@@ -1,9 +1,19 @@
 from django.test import TestCase, Client
+from TA_Scheduler_App.models import User
 
 class LoginTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         self.login_url = '/'  # root URL based on your urls.py
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='testpass',
+            userEmail='test@example.com',
+            firstName='Test',
+            lastName='User',
+            homeAddress='123 Main St',
+            accountType=1  # Example: 1 = Teacher
+        )
 
     def test_login_page_loads_correctly(self):
         response = self.client.get(self.login_url)
@@ -15,8 +25,7 @@ class LoginTestCase(TestCase):
             'username': 'testuser',
             'password': 'testpass'
         })
-        # I think this should be an incorrect message because the backend doesn't look like it validates users yet
-        self.assertContains(response, "Either username or password is incorrect!")
+        self.assertNotContains(response, "Either username or password is incorrect!")
 
     def test_login_with_empty_fields(self):
         response = self.client.post(self.login_url, {

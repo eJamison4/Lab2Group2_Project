@@ -17,7 +17,7 @@ class User(AbstractUser):
     officeHours = models.CharField(max_length=256, null=True, blank=True)
     timeCreated = models.DateTimeField(auto_now_add=True)
     #have admin be 2 teacher 1 and TA 0
-    accountType = models.IntegerField(default=0)
+    accountType = models.IntegerField(default=2)
 
 
 class Course(models.Model):
