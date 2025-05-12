@@ -310,7 +310,7 @@ class Skills(View):
         action = request.POST.get('action')
         if action == 'create':
             if skillString is not None:
-                SkillsFeatures.create_skill(request.user,skillString)
+                SkillsFeatures.create_skill(request.user, skillString)
 
         if action == 'edit':
             if skillId is not None and skillString is not None:
