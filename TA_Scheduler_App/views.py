@@ -314,7 +314,7 @@ class Skills(View):
 
         if action == 'edit':
             if skillId is not None and skillString is not None:
-                SkillsFeatures.edit_skill(skillId,skillString)
+                SkillsFeatures.edit_skill(skillId, skillString)
 
         if action == 'delete':
             if skillId is not None:
