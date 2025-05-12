@@ -295,7 +295,7 @@ class Assignments(View):
             return redirect('courses')
         if action == 'delete':
             if assignment is not None:
-                assignment_features.delete_assignment(self,assignment.pk)
+                assignment_features.delete_assignment(self, assignment.pk)
 
         return redirect('course')
 
