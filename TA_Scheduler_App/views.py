@@ -323,7 +323,7 @@ class Skills(View):
 
 
 class myAccount(View):
-    def get(self,request):
+    def get(self, request):
         pass
 
     def post(self, request):
