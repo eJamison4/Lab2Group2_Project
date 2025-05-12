@@ -288,7 +288,7 @@ class Assignments(View):
         relations = teacherToTA.objects.all().filter(teacherIDF=request.user)
         return render(request, 'courses.html', {'relations': relations, 'courses': courses})
 
-    def post(self,request, section=None,assignment=None):
+    def post(self, request, section=None, assignment=None):
         action = request.POST.get('action')
         if action == 'create':
             assignment_features.create_assignment(self,section,request.user)
