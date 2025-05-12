@@ -304,7 +304,7 @@ class Assignments(View):
 class Skills(View):
     def get(self,request):
         skill = Skills.objects.all().filter(userId=request.user.pk)
-        return render(request, 'accounts.html', {'skills':skill})
+        return render(request, 'accounts.html', {'skills': skill})
 
     def post(self,request,skillId=None,skillString=None):
         action = request.POST.get('action')
