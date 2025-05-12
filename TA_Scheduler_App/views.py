@@ -306,7 +306,7 @@ class Skills(View):
         skill = Skills.objects.all().filter(userId=request.user.pk)
         return render(request, 'accounts.html', {'skills': skill})
 
-    def post(self,request,skillId=None,skillString=None):
+    def post(self, request, skillId=None, skillString=None):
         action = request.POST.get('action')
         if action == 'create':
             if skillString is not None:
