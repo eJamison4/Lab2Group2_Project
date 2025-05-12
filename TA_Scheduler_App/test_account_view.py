@@ -9,10 +9,14 @@ class TestAccountView(TestCase):
         self.client = Client()
         self.admin = User.objects.create_superuser(username='Admin', email='', password='Admin')
 
+    def _login(self, usr, pwd):
+        ok = self.client.login(username=usr, password=pwd)
+        self.assertTrue(ok, f"Login failed for {usr!r}")
+
 
     def test_all_features(self):
         #Create
-        self.client.login(username='Admin', password='Admin')
+        self._login("Admin", "Admin")
         response = self.client.post(reverse('accounts'), {"action": "create",
             "username": "bob",
             "password": "pw",
@@ -30,9 +34,11 @@ class TestAccountView(TestCase):
             "action": "edit",
             "pk": bob.pk,
             "username": "bobby",
+            "password": "new password",
         })
         bob = User.objects.get(pk=bob.pk)
         self.assertEqual(bob.username, "bobby", msg="User name not updated")
+        self.assertEqual(bob.check_password("new password"), True, msg="Password not updated")
 
         #Delete
         self.client.post(reverse('accounts'), {
@@ -44,6 +50,7 @@ class TestAccountView(TestCase):
     #Leaving blanks for editing should not alter the respective fields
     def test_edit_blanks(self):
         # Create
+        self._login("Admin", "Admin")
         self.client.post(reverse('accounts'), {
             "action": "create",
             "username": "bob",
@@ -74,8 +81,10 @@ class TestAccountView(TestCase):
         self.assertEqual(bob.userEmail, "bob@example.com", msg="Email was changed")
 
     #Account creation should be rejected if the necessary fields are not provided
-    #First name, last name, email, home address, username, and password are needed
+    #First name, last name, email, username, and password are needed
     def test_create_blanks(self):
+        self._login("Admin", "Admin")
+
         self.client.post(reverse('accounts'), {
             "action": "create",
             "username": "bob",
@@ -88,3 +97,91 @@ class TestAccountView(TestCase):
 
         self.assertEqual(User.objects.count(), 1, msg="Account was created when it should be rejected")
 
+
+class SecurityAcceptanceTests(TestCase):
+
+    def setUp(self):
+        self.admin = User.objects.create_user(
+            username="Admin", password="Admin",
+            userEmail="a@uwm.edu", firstName="Admin", lastName="Admin",
+            homeAddress="1 Main", accountType=2
+        )
+        self.ta = User.objects.create_user(
+            username="TA", password="TA",
+            userEmail="t@uwm.edu", firstName="Tim", lastName="Assistant",
+            homeAddress="2 Main", accountType=0
+        )
+
+    def _login(self, usr, pwd):
+        ok = self.client.login(username=usr, password=pwd)
+        self.assertTrue(ok, f"Login failed for {usr!r}")
+
+    #Checks if admin feature buttons are not rendered
+    def test_non_admin_sees_no_admin_controls(self):
+        self._login("TA", "TA")
+        resp = self.client.get(reverse("accounts"))
+
+        self.assertEqual(resp.status_code, 200) #Successful traversal to accounts page
+
+        self.assertNotContains(resp, "➕ Add User")
+        self.assertNotContains(resp, "✏️ Edit")
+        self.assertNotContains(resp, "Delete")
+
+    #tests forced post from non_admin
+    def test_non_admin_cannot_create_via_post(self):
+        self._login("TA", "TA")
+
+        resp = self.client.post(
+            reverse("accounts"),
+            {
+                "action": "create",
+                "username": "hax",
+                "password": "pw",
+                "userEmail": "h@uwm.edu",
+                "firstName": "Hax",
+                "lastName": "User",
+                "homeAddress": "3 Main",
+                "accountType": 0,
+            },
+        )
+
+        self.assertEqual(resp.status_code, 403) #Rejected request
+        self.assertFalse(User.objects.filter(username="hax").exists())
+
+    #Ideal route, admin creates user
+    def test_admin_can_create_user(self):
+        self._login("Admin", "Admin")
+
+        self.client.post(
+            reverse("accounts"),
+            {
+                "action": "create",
+                "username": "newbie",
+                "password": "pw",
+                "userEmail": "n@uwm.edu",
+                "firstName": "New",
+                "lastName": "User",
+                "homeAddress": "4 Main",
+                "accountType": 0,
+            },
+            follow=True,
+        )
+
+        self.assertTrue(User.objects.filter(username="newbie").exists())
+
+    #Deleting own account should force logout
+    def test_deleting_self_logs_out(self):
+        self._login("Admin", "Admin")
+        self.client.post(
+            reverse("accounts"),
+            {"action": "delete", "pk": self.admin.pk},
+            follow=True,
+        )
+
+        resp = self.client.get(reverse("accounts"))
+        self.assertEqual(resp.status_code, 302) #Redirect to different page
+
+        #removes part of the url that indicates which page it redirects back to after logging in.
+        #in other words, we get the important part of the url
+        redirected_to = resp.url.split("?", 1)[0]
+        self.assertEqual(redirected_to, reverse("login"))

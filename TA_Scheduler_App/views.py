@@ -4,6 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views import View
+from django.http import HttpResponseForbidden
+
 
 from TA_Scheduler_App.assignment_features import assignment_features
 from TA_Scheduler_App.models import User, Course, Section, Assignment, teacherToTA
@@ -55,16 +57,22 @@ class Dashboard(LoginRequiredMixin, View):
             "is_admin": request.user.accountType == 2
         })
 
-class Account(View):
+class Account(LoginRequiredMixin, View):
+    login_url = '/'
     template_name = "accounts.html"
 
     def get(self, request):
         users = User.objects.all().order_by("id")
-        return render(request, self.template_name, {"users": users})
+        is_admin = request.user.is_authenticated and getattr(request.user, "accountType", 0) == 2
+        return render(request, self.template_name, {"users": users,
+                                                    "is_admin": is_admin})
 
     def post(self, request):
-        action = request.POST.get('action')
 
+        if not request.user.is_authenticated or request.user.accountType != 2:
+            return HttpResponseForbidden("Admins only.")
+
+        action = request.POST.get('action')
 
         try:
             if action == "create":
@@ -116,8 +124,7 @@ class Account(View):
 
                 if (new_data["new_username"] == "" or new_data["new_password"] == "" or
                         new_data["new_email"] == "" or
-                        new_data["new_first_name"] == "" or new_data["new_last_name"] == "" or
-                        new_data["new_home_address"] == ""):
+                        new_data["new_first_name"] == "" or new_data["new_last_name"] == ""):
                     messages.error(request, "Creation Error: Please fill all fields")
                     return redirect('accounts')
 
@@ -231,6 +238,9 @@ class Account(View):
                 primary_key = request.POST.get('pk')
                 if AccountFeatures.delete_account(user_id= primary_key) is True:
                     messages.success(request, "User deleted successfully")
+                    if request.user.is_authenticated and request.user.pk == int(primary_key):
+                        logout(request)
+                        return redirect("login")
                 else:
                     messages.error(request, "Deletion Error: User not found")
 
