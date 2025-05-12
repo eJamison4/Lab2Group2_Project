@@ -286,7 +286,7 @@ class Assignments(View):
     def get(self,request):
         courses = Course.objects.all()
         relations = teacherToTA.objects.all().filter(teacherIDF=request.user)
-        return render(request, 'courses.html',{'relations':relations,'courses':courses})
+        return render(request, 'courses.html', {'relations': relations, 'courses': courses})
 
     def post(self,request, section=None,assignment=None):
         action = request.POST.get('action')
