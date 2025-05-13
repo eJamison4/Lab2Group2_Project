@@ -1,16 +1,16 @@
 from TA_Scheduler_App.models import Section, User, Assignment
 
-class assignment_features:
 
+class assignment_features:
     @staticmethod
-    def create_assignment(self,inSection:Section,inUser:User):
-        newAssignment = Assignment.objects.create(userID=inUser,sectionID=inSection)
+    def create_assignment(self, inSection: Section, inUser: User):
+        newAssignment = Assignment.objects.create(userID=inUser, sectionID=inSection)
         newAssignment.save()
 
         return newAssignment
 
     @staticmethod
-    def delete_assignment(self,assignmentID:int):
+    def delete_assignment(self, assignmentID: int):
         try:
             assignment = Assignment.objects.get(pk=assignmentID)
             assignment.delete()
