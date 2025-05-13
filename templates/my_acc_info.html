@@ -1,71 +1,65 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      background-color: white;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-    .main_box {
-      margin: 0 1.5% 0 1.5%;
-      flex-direction: column;
-      background-color: lightgray;
-      height: 100%;
-    }
-    nav {
-      display: flex;
-      align-items: center;
-      height: 32px;
-      padding: 10px 0 10px 0;
-      background: #c4c4c4;
-      font-size: 18px;
-    }
-    nav a {
-      color: #0000ee;
-      text-decoration: none;
-      margin: 0 9px 0 9px;
-    }
-    nav a:hover {
-      background-color: #999999;
-    }
-    nav a.active {
-      pointer-events: none;
-      cursor: default;
-      font-weight: 600;
-      color: black;
-    }
-    nav .right {
-      margin-left: auto;
-    }
-    img {
-      max-width: 233px;
-      margin-left: 1.5%;
-    }
-  </style>
-  <head>
+<head>
     <meta charset="UTF-8" />
     <title>My Account Info; UWM TA Scheduling Tool</title>
-  </head>
-  <body>
-    <img
-      alt="UWM TA Scheduler Tool Logo"
-      src="{% static 'images/UWM_TA_sched_logo.png' %}"
-    />
-    <div class="main_box">
-      <nav>
-        <a href="">Dashboard</a>
-        <a href="courses.html">Courses</a>
-        <a href="send_notifs.html">Send Notifications</a>
-        <a href="accounts.html">Accounts</a>
-        <a href="feedback.html">Feedback</a>
+    <link rel="stylesheet" href="{% static 'stylesheets/common_style.css' %}">
+    <style>
+
+    </style>
+    <script>
+        function edit_name() {
+            {% if is_admin %}
+            document.getElementById("name").innerHTML = "" +
+                "<input type='text' name='firstname' value='{{ u.firstName }}' placeholder='{{ u.firstName }}'/>" +
+                "<input type='text' name='lastname' value='{{ u.lastName }}' placeholder='{{ u.lastName }}'/>";
+            {% endif %}
+        }
+        document.getElementById("nameClick").addEventListener('click', edit_name);
+    </script>
+</head>
+<body>
+    <img alt="UWM TA Scheduler Tool Logo" src="{% static 'images/UWM_TA_sched_logo.png' %}" />
+    <nav>
+        <a href="{% url 'courses' %}">Courses</a>
+        <a href="{% url 'send_notifs' %}">Send Notifications</a>
+        <a href="{% url 'accounts' %}">Accounts</a>
+        <a href="{% url 'feedback' %}">Feedback</a>
         <div class="right"></div>
-        <a href="my_acc_info.html" class="active">My Account Info</a>
-      </nav>
-      <div style="height: 200px; background-color: darkcyan; margin: 40px">
-        Placeholder
-      </div>
-    </div>
-  </body>
+        <a href="{% url 'my_acc_info' %}" class="active">My Account Info</a>
+    </nav>
+    <main>
+        <form method="post" action="{% url 'my_acc_info' %}">
+            {% csrf_token %}
+            <div>
+                <div id="name">
+                    <input type="hidden" name="firstname" value="{{ u.firstName }}"/>
+                    <input type="hidden" name="lastname" value="{{ u.lastName }}"/>
+                    <h3 id="nameClick" onclick="edit_name()">{{ u.firstName }} {{ u.lastName }}</h3>
+                </div><br/>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value="{{ u.username }}"
+                       {% if not is_admin %}disabled{% endif %}
+                /><br/>
+                <label>Role:
+                {% if u.accountType == 0 %}TA{% elif u.accountType == 1 %}Instructor{% else %}Admin{% endif %}
+                </label><br/>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="{{ u.password }}"
+                       {% if not is_admin %}disabled{% endif %}
+                /><br/>
+                <label for="email">Email:</label>
+                <input type="email" name="userEmail" id="email" value="{{ u.userEmail }}"/><br/>
+                <label for="phone">Phone #:</label>
+                <input type="text" name="phoneNumber" id="phone" value="{{ u.phoneNumber }}"><br/>
+                <label for="address">Mailing Address:</label>
+                <input type="text" name="homeAddress" id="address" value="{{ u.homeAddress }}"><br/>
+                <label for="skills">Skill Set:</label>
+                <textarea id="skills">Skills go here</textarea><br/>
+            </div>
+            <button>save</button>
+        </form>
+    </main>
+</body>
 </html>

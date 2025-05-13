@@ -15,15 +15,16 @@ class CourseFeatures:
             sectionCode  = models.CharField(max_length=20)
             instructor   = models.CharField(max_length=256, blank=True)
     """
-
     @staticmethod
-    def create_course(courseName=""):
+    def create_course(courseName: str, semester: str):
         if not courseName:
             raise Exception("no course name provided")
+        if not semester:
+            raise Exception("no semester provided")
 
-        a: Course
+        a: Course = None
         try:
-            a = Course.objects.get(courseName=courseName)
+            a = Course.objects.get(courseName=courseName, semester=semester)
         except Course.MultipleObjectsReturned:
             raise Exception("something is really wrong")
         except Course.DoesNotExist:
@@ -32,12 +33,12 @@ class CourseFeatures:
         if a is not None:
             return False
 
-        course = Course.objects.create(courseName=courseName)
+        course = Course.objects.create(courseName=courseName, semester=semester)
         course.save()
         return course
 
     @staticmethod
-    def create_section(courseForeignKey: Course, sectionCode: str, instructor=""):
+    def create_section(courseForeignKey: Course, sectionCode="newSection", instructor=""):
         if not (courseForeignKey and sectionCode):
             return False
         if not isinstance(courseForeignKey, Course):

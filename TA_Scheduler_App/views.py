@@ -35,7 +35,7 @@ class Login(View):
         print(password)
         if user is not None:
             login(request, user)
-            return render(request, "dashboard.html", context={"username": username})
+            return render(request, "my_acc_info.html", context={"username": username})
 
         return render(request, "login.html", {"message": "Either username or password is incorrect!"})
         # return redirect()
@@ -247,7 +247,6 @@ class Courses(View):
     def get(self, request):
         courses = Course.objects.all()
         # prefetch sections so the template can loop efficiently
-        courses = Course.objects.prefetch_related("section_set").all()
         print("COURSES:", courses)
         return render(request, "courses.html", {"courses": courses})
 
@@ -306,7 +305,25 @@ class Skills(View):
                 SkillsFeatures.delete_skill(skillId)
 
 
-class myAccount(View):
+class MyAccount(View):
+    def get(self, request):
+        acc_info = request.user
+        is_admin = request.user.is_authenticated and getattr(request.user, "accountType", 0) == 2
+        return render(request, "my_acc_info.html", context={"u": acc_info, "is_admin": is_admin})
+
+    def post(self, request):
+        pass
+
+
+class Feedback(View):
+    def get(self, request):
+        pass
+
+    def post(self, request):
+        pass
+
+
+class SendNotifs(View):
     def get(self, request):
         pass
 
