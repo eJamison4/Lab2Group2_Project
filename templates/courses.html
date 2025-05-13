@@ -2,123 +2,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Courses — TA Scheduling Tool</title>
-<style>
-  *{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif}
-  header {
-        display:flex;
-      align-items:flex-end;
-      padding:10px 20px}
-  header img{
-      height:100px
-  }
+    <meta charset="UTF-8">
+    <title>Courses — TA Scheduling Tool</title>
+    <link rel="stylesheet" href="{% static 'stylesheets/common_style.css' %}">
+    <style>
+        #course-form {margin-bottom: 20px}
 
+        #course-form input {
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            margin-right: 8px
+        }
 
-  nav{
-      display:flex;
-      align-items:center;
-      background:#c4c4c4;
-      height:32px;
-      padding:10px;
-      font-size:14px
-  }
-  nav a{
-      color:#00e;
-      text-decoration:none;margin-right:18px;
-      line-height:32px
-  }
-  nav a:hover{
-      text-decoration:underline}
+        #course-form button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 2px;
+            background: #007acc;
+            color: #fff;
+            cursor: pointer
+        }
 
-  nav a.active{
-      background:lightgray;
-      border:1px solid darkgray;
-      padding:6px 12px;
-      border-radius:4px;
-      font-weight:600;
-      color:#000
-  }
-  nav .right{margin-left:auto;display:flex;align-items:center}
-  main{padding:10px 14px}
-  h2{margin:0 0 12px;font-size:18px;font-weight:700}
-  #course-form{margin-bottom:20px}
-  #course-form input{padding:6px;border:1px solid #ccc;border-radius:2px;margin-right:8px}
-  #course-form button{padding:6px 12px;border:none;border-radius:2px;background:#007acc;color:#fff;cursor:pointer}
-  #course-form button:hover{background:#005fa3}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:8px;border-bottom:1px solid #e0e0e0;text-align:left;vertical-align:top}
-  th{background:#f0f0f0}
-  details{margin-top:4px}
-  details form{margin-top:4px}
-  details input{padding:4px 6px;border:1px solid #ccc;border-radius:2px;margin-right:6px;width:110px}
-  details button{padding:4px 10px;border:none;border-radius:2px;background:#007acc;color:#fff;cursor:pointer}
-  details button:hover{background:#005fa3}
-</style>
+        #course-form button:hover {background: #005fa3}
+
+        table {width: 100%; border-collapse: collapse}
+
+        th, td {
+            padding: 8px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+            vertical-align: top
+        }
+
+        th {background: #f0f0f0}
+
+        details {margin-top: 4px}
+
+        details form {margin-top: 4px}
+
+        details input {
+            padding: 4px 6px;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            margin-right: 6px;
+            width: 110px
+        }
+
+        details button {
+            padding: 4px 10px;
+            border: none;
+            border-radius: 2px;
+            background: #007acc;
+            color: #fff;
+            cursor: pointer
+        }
+
+        details button:hover {background: #005fa3}
+    </style>
 </head>
 <body>
-
-<header>
-  <img src="{% static 'images/UWM_TA_sched_logo.png' %}" alt="UWM Logo">
-</header>
-
-<nav>
-  <a href="{% url 'dashboard' %}">Dashboard</a>
-  <a href="{% url 'courses' %}" class="active">Courses</a>
-  <a href="#">Send Notifications</a>
-  <a href="{% url 'accounts' %}">Accounts</a>
-  <a href="#">Feedback</a>
-  <div class="right"><a href="#">My Account Info</a></div>
-</nav>
-
-<main>
-<h2>Courses</h2>
-
-<div id="course-form">
-  <form method="post">
-    {% csrf_token %}
-    <input type="text" name="courseName" placeholder="New course name" required>
-    <button type="submit">Add Course</button>
-  </form>
-</div>
-
-<table>
-  <thead>
-    <tr><th>ID</th><th>Name & Sections</th><th></th></tr>
-  </thead>
-  <tbody>
-    {% for course in courses %}
-      <tr>
-        <td>{{ forloop.counter  }}</td>
-        <td>
-          <strong>{{ course.courseName }}</strong>
-
-          <details {% if course.section_set.exists %}open{% endif %}>
-            <summary>{{ course.section_set.count }} section{{ course.section_set.count|pluralize }}</summary>
-
-            {% if course.section_set.exists %}
-              <ul style="margin:6px 0 6px 18px;padding:0">
-                {% for s in course.section_set.all %}
-                  <li style="list-style:disc">{{ s.sectionCode }}{% if s.instructor %} — {{ s.instructor }}{% endif %}</li>
-                {% endfor %}
-              </ul>
-            {% endif %}
-            <form method="post" action="{% url 'add-section' forloop.counter %}">
-              {% csrf_token %}
-              <input type="text" name="sectionCode"  placeholder="Section #"   required>
-              <input type="text" name="instructor"   placeholder="Instructor">
-              <button type="submit">Add</button>
+    <header>
+        <img src="{% static 'images/UWM_TA_sched_logo.png' %}" alt="UWM Logo">
+    </header>
+    <nav>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'courses' %}" class="active">Courses</a>
+        <a href="#">Send Notifications</a>
+        <a href="{% url 'accounts' %}">Accounts</a>
+        <a href="#">Feedback</a>
+        <div class="right"><a href="#">My Account Info</a></div>
+    </nav>
+    <main>
+        <h2>Courses</h2>
+        <div id="course-form">
+            <form method="post">
+                {% csrf_token %}
+                <input type="text" name="courseName" placeholder="New course name" required>
+                <button type="submit">Add Course</button>
             </form>
-          </details>
-        </td>
-        <td><!-- placeholder for future Edit/Delete buttons --></td>
-      </tr>
-    {% empty %}
-      <tr><td colspan="3">No courses added yet.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
-</main>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name & Sections</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td>{{ forloop.counter  }}</td>
+                    <td>
+                        <strong>{{ course.courseName }}</strong>
 
+                        <details {% if course.section_set.exists %}open{% endif %}>
+                            <summary>{{ course.section_set.count }} section{{ course.section_set.count|pluralize }}
+                            </summary>
+
+                            {% if course.section_set.exists %}
+                            <ul style="margin:6px 0 6px 18px;padding:0">
+                                {% for s in course.section_set.all %}
+                                <li style="list-style:disc">{{ s.sectionCode }}{% if s.instructor %} —
+                                    {{ s.instructor }}{% endif %}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            <form method="post" action="{% url 'add-section' forloop.counter %}">
+                                {% csrf_token %}
+                                <input type="text" name="sectionCode" placeholder="Section #" required>
+                                <input type="text" name="instructor" placeholder="Instructor">
+                                <button type="submit">Add</button>
+                            </form>
+                        </details>
+                    </td>
+                    <td>
+                        <!-- placeholder for future Edit/Delete buttons -->
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No courses added yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
 </body>
 </html>
