@@ -324,7 +324,9 @@ class Skills(View):
 
 class myAccount(View):
     def get(self, request):
-        pass
+        email = request.user.userEmail
+        phone = request.user.phoneNumber
+        return render(request, 'dashboard.html', {'email':email,'phone':phone})
 
-    def post(self, request):
+    def post(self, request, newPhone=None, newEmail=None):
         pass
