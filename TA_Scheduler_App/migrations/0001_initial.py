@@ -23,7 +23,8 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("courseName", models.CharField(max_length=20)),
+                ("courseName", models.CharField(max_length=256)),
+                ("semester", models.CharField(max_length=256)),
             ],
         ),
         migrations.CreateModel(
@@ -51,28 +52,6 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name="Lab",
-            fields=[
-                (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
-                ("labTime", models.CharField(max_length=20)),
-                (
-                    "courseForeignKey",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="TA_Scheduler_App.course",
-                    ),
-                ),
-            ],
-        ),
-        migrations.CreateModel(
             name="Section",
             fields=[
                 (
@@ -84,9 +63,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("sectionTime", models.CharField(max_length=20)),
+                ("sectionCode", models.CharField(max_length=20)),
+                ("instructor", models.CharField(max_length=256, blank=True)),
                 (
-                    "courseForeignKey",
+                    "course",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         to="TA_Scheduler_App.course",
@@ -107,15 +87,6 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("graderStatus", models.IntegerField(default=0)),
-                (
-                    "labID",
-                    models.ForeignKey(
-                        blank=True,
-                        null=True,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="TA_Scheduler_App.lab",
-                    ),
-                ),
                 (
                     "sectionID",
                     models.ForeignKey(
