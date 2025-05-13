@@ -1,68 +1,238 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TA Scheduling Tool – Accounts</title>
+
+  <!-- ====== (same inline CSS as dashboard) ====== -->
   <style>
+    * { box-sizing: border-box; }
     body {
-      display: flex;
-      flex-direction: column;
-      background-color: white;
       font-family: Arial, Helvetica, sans-serif;
+      background: white;
     }
-    .main_box {
-      margin: 0 1.5% 0 1.5%;
-      flex-direction: column;
-      background-color: lightgray;
-      height: 100%;
+    header {
+      display: flex;
+      align-items: flex-end;
+      background: white;
+      padding: 10px 20px;
     }
+    header img { height: 100px; }
+
     nav {
       display: flex;
       align-items: center;
       height: 32px;
-      padding: 10px 0 10px 0;
+      padding: 10px;
       background: #c4c4c4;
-      font-size: 18px;
+      font-size: 14px;
     }
     nav a {
       color: #0000ee;
       text-decoration: none;
-      margin: 0 9px 0 9px;
+      margin-right: 18px;
+      line-height: 32px;
     }
-    nav a:hover {
-      background-color: #999999;
-    }
+    nav a:hover { text-decoration: underline; }
     nav a.active {
-      pointer-events: none;
-      cursor: default;
+      background: lightgray;
+      border: 1px solid darkgray;
+      padding: 6px 12px;
+      border-radius: 4px;
       font-weight: 600;
       color: black;
     }
-    nav .right {
-      margin-left: auto;
+    nav .right { margin-left: auto; display: flex; align-items: center; }
+    nav .right .icon { font-size: 18px; font-weight: bold; margin-left: 6px; cursor: pointer; }
+
+    main { padding: 10px 14px; }
+    h2   { margin: 0 0 6px 0; font-size: 15px; font-weight: 700; }
+
+    #user‑panel {
+      border: 1px solid black;
+      background: white;
+      width: 100%;
+      height: 300px;
+      overflow-y: auto;
+      padding: 8px;
     }
-    img {
-      max-width: 233px;
-      margin-left: 1.5%;
+    #user‑panel details {
+        margin: 4px 0;
+    }
+
+    #user‑panel summary  {
+        cursor: pointer; font-weight: 600;
+    }
+
+    form.inline   {
+        display: inline;
+    }
+    input.small   {
+        width: 120px;
+    }
+    button        {
+        padding: 4px 8px; margin-left: 4px;
+    }
+
+
+    .modal {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,.35);
+        justify-content: center; align-items: center; z-index: 1000;
+    }
+
+    .modal:target {
+        display: flex;
+    }
+
+
+    .modal .box   {
+        background: #fff; border: 1px solid #000;
+        border-radius: 4px; max-width: 500px;
+        width: 100%; padding: 16px;
+    }
+
+    .modal .close {
+        float: right; font-size: 24px;
+        text-decoration: none; color: #000;
+    }
+
+    .modal input[type=text],
+    .modal input[type=password],
+    .modal input[type=email]  {
+        width: 100%; margin: 4px 0 8px; padding: 4px;
+    }
+
+    .radio-row {
+        display: flex; gap: 10px; margin: 6px 0;
     }
   </style>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Accounts; UWM TA Scheduling Tool</title>
-  </head>
-  <body>
-    <img alt="UWM TA Scheduler Tool Logo" src="{% static 'images/UWM_TA_sched_logo.png' %}"/>
-    <div class="main_box">
-      <nav>
-        <a href="">Dashboard</a>
-        <a href="courses.html">Courses</a>
-        <a href="send_notifs.html">Send Notifications</a>
-        <a href="accounts.html" class="active">Accounts</a>
-        <a href="feedback.html">Feedback</a>
-        <div class="right"></div>
-        <a href="my_acc_info.html">My Account Info</a>
-      </nav>
-      <div style="height: 200px; background-color: darkcyan; margin: 40px">
-        Placeholder
-      </div>
+</head>
+<body>
+  <header>
+    <img src="../static/images/UWM_TA_sched_logo.png" alt="UWM Logo">
+  </header>
+
+  <nav>
+    <a href={% url "dashboard" %}>Dashboard</a>
+    <a href={% url "courses" %}>Courses</a>
+    <a href="#">Send Notifications</a>
+    <a href="#" class="active">Accounts</a>
+    <a href="#">Feedback</a>
+
+    <div class="right">
+      <a href="#">My Account Info</a>
+      <span class="icon">&#x2753;</span>
     </div>
-  </body>
+  </nav>
+
+  <main>
+    <h2>Accounts</h2>
+    {% if messages %}
+      {% for message in messages %}
+        {% if forloop.last %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+  {% if is_admin %}
+    <a href="#create" class="btn">➕ Add User</a>
+  {% endif %}
+
+    <div id="user‑panel">
+      {% for u in users %}
+        <details {% if forloop.first %}open{% endif %}>
+          <summary>{{ u.firstName }} {{ u.lastName }}</summary>
+
+          <div style="margin-left:14px">
+            Email: {{ u.userEmail }}<br>
+            Username: {{ u.username }}<br>
+            Role: {% if u.accountType == 0 %}TA{% elif u.accountType == 1 %}Instructor{% else %}Admin{% endif %}
+
+            {% if is_admin %}
+                <a href="#edit-{{u.id}}">✏️ Edit</a>
+            {% endif %}
+
+            <!-- delete -->
+          {% if is_admin %}
+            <form method="post" class="inline">{% csrf_token %}
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="pk" value="{{ u.pk }}">
+              <button title="Delete">Delete</button>
+            </form>
+          {% endif %}
+          </div>
+        </details>
+
+          {% if is_admin %}
+          <div id="edit-{{u.id}}" class="modal">
+          <div class="box">
+            <a href="#" class="close">&times;</a>
+            <h3>Edit {{ u.firstName }}</h3>
+            <label> To keep old details, leave blank</label>
+            <form method="post" action="{% url "accounts" %}">{% csrf_token %}
+              <input type="hidden" name="action" value="edit">
+              <input type="hidden" name="pk" value="{{ u.id }}">
+              <input name="username" placeholder="New Username">
+                <input type="password" name="password" placeholder ="New Password">
+              <input type="email" name="userEmail" placeholder="New Email">
+              <input name="firstName" placeholder = "New First Name">
+              <input name="lastName" placeholder = "New Last Name">
+              <input name="phoneNumber" placeholder ="New Phone #">
+              <input name="homeAddress" placeholder="New Address">
+              <div class="radio-row">
+                <label>
+                    <input type="radio" name="accountType" value="2"
+                              {% if u.accountType == 2 %}checked{% endif %}>
+                    Admin</label>
+                <label>
+                    <input type="radio" name="accountType" value="1"
+                              {% if u.accountType == 1 %}checked{% endif %}
+                > Instructor</label>
+                <label>
+                    <input type="radio" name="accountType" value="0"
+                           {% if u.accountType == 0 %}checked{% endif %}
+                    > TA</label>
+              </div>
+              <button>Save</button>
+            </form>
+          </div>
+          </div>
+          {% endif %}
+
+
+      {% empty %}
+        <p>No users yet.</p>
+      {% endfor %}
+    </div>
+  </main>
+    {% if is_admin %}
+    <div id="create" class="modal">
+        <div class="box">
+          <a href="#" class="close">&times;</a>
+          <h3>Create User</h3>
+          <form method="post" action = "{% url "accounts" %}">{% csrf_token %}
+            <input type="hidden" name="action" value="create">
+            <input name="username"    placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="email"    name="userEmail"  placeholder="Email" required>
+            <input name="firstName"   placeholder="First name" required>
+            <input name="lastName"    placeholder="Last name" required>
+            <input name="phoneNumber" placeholder="Phone # (Optional)">
+            <input name="homeAddress" placeholder="Home address (Optional)">
+            <div class="radio-row">
+              <label><input type="radio" name="accountType" value="2" checked> Admin</label>
+              <label><input type="radio" name="accountType" value="1"> Instructor</label>
+              <label><input type="radio" name="accountType" value="0"> TA</label>
+            </div>
+            <button>Create</button>
+          </form>
+        </div>
+      </div>
+    {% endif %}
+
+</body>
 </html>
