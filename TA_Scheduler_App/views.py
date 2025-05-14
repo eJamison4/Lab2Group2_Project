@@ -252,9 +252,31 @@ class Courses(View):
         return render(request, "courses.html", {"courses": courses})
 
     def post(self, request):
-        name = request.POST.get("courseName")
-        if name:
-            CourseFeatures.create_course(courseName=name)
+
+        userType = request.user.accountType
+        if userType < 2:
+            requestStuff = request.POST.copy()
+            requestStuff.update({'errorCode':'User is not an admin and has no edit permissions'})
+            return render(request,template_name='courses.html',context=requestStuff,status=403)
+
+        action = request.POST.get("action")
+
+        if action == 'create':
+            name = request.POST.get("courseName")
+            if name:
+                CourseFeatures.create_course(courseName=name)
+
+        if action == 'edit':
+            courseID = int(request.POST.get("courseId"))
+            newCourseName = request.POST.get("newCourseName")
+            if courseID:
+                CourseFeatures.edit_course(courseKey=courseID, newCourseName=newCourseName)
+
+        if action == 'delete':
+            courseID = int(request.POST.get("courseId"))
+            if courseID:
+                CourseFeatures.delete_course(courseKey=courseID)
+
         return redirect("courses")
 
 
