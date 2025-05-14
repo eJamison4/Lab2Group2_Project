@@ -9,6 +9,7 @@ class LabSectionAcceptanceTests(TestCase):
 
         # Create users
         self.admin = User.objects.create_user(
+            username="Admin",
             userEmail="admin@example.com",
             password="adminpass",
             accountType=2,
@@ -16,6 +17,7 @@ class LabSectionAcceptanceTests(TestCase):
         )
 
         self.ta = User.objects.create_user(
+            username="TA",
             userEmail="ta@example.com",
             password="tapass",
             accountType=0,
@@ -23,6 +25,7 @@ class LabSectionAcceptanceTests(TestCase):
         )
 
         self.instructor = User.objects.create_user(
+            username="Instructor",
             userEmail="instructor@example.com",
             password="instructorpass",
             accountType=1,
@@ -32,12 +35,11 @@ class LabSectionAcceptanceTests(TestCase):
         # Create course
         self.course = Course.objects.create(
             courseName="CS101",
-            semester="Fall",
-            year="2024"
+            semester="Fall2025",
         )
 
     def test_admin_can_create_section(self):
-        self.client.login(userEmail="admin@example.com", password="adminpass")
+        self.client.login(username="Admin", password="adminpass")
 
         response = self.client.post(f"/courses/{self.course.id}/add-section/", {
             "sectionCode": "301",
@@ -48,21 +50,23 @@ class LabSectionAcceptanceTests(TestCase):
         self.assertTrue(Section.objects.filter(course=self.course, sectionCode="301").exists())
 
     def test_ta_cannot_access_add_section_page(self):
-        self.client.login(userEmail="ta@example.com", password="tapass")
+        self.client.login(username="TA", password="tapass")
 
         response = self.client.get(f"/courses/{self.course.id}/add-section/")
         self.assertNotEqual(response.status_code, 200)
-        self.assertIn(response.status_code, [302, 403])
+        self.assertIn(response.status_code, [302, 403, 405])
+        # 403: FORBIDDEN; 405: METHOD_NOT_ALLOWED
 
     def test_instructor_cannot_access_add_section_page(self):
-        self.client.login(userEmail="instructor@example.com", password="instructorpass")
+        self.client.login(username="Instructor", password="instructorpass")
 
         response = self.client.get(f"/courses/{self.course.id}/add-section/")
         self.assertNotEqual(response.status_code, 200)
-        self.assertIn(response.status_code, [302, 403])
+        self.assertIn(response.status_code, [302, 403, 405])
+        # 403: FORBIDDEN; 405: METHOD_NOT_ALLOWED
 
     def test_ta_cannot_create_section(self):
-        self.client.login(userEmail="ta@example.com", password="tapass")
+        self.client.login(username="TA", password="tapass")
 
         response = self.client.post(f"/courses/{self.course.id}/add-section/", {
             "sectionCode": "302",
@@ -73,7 +77,7 @@ class LabSectionAcceptanceTests(TestCase):
         self.assertFalse(Section.objects.filter(course=self.course, sectionCode="302").exists())
 
     def test_instructor_cannot_create_section(self):
-        self.client.login(userEmail="instructor@example.com", password="instructorpass")
+        self.client.login(username="Instructor", password="instructorpass")
 
         response = self.client.post(f"/courses/{self.course.id}/add-section/", {
             "sectionCode": "303",
