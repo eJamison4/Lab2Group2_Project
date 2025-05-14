@@ -8,4 +8,3 @@ workspace.xml
 /dataSources.local.xml
 __pycache__
 *.pyc
-/.idea/
