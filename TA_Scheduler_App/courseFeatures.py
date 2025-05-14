@@ -16,7 +16,7 @@ class CourseFeatures:
     """
     @staticmethod
 
-    def create_course(courseName:str):
+    def create_course(courseName:str, semester:str=None):
         if courseName is None or courseName is '':
             raise Exception('no')
 
@@ -32,6 +32,8 @@ class CourseFeatures:
             return False
 
         course = Course.objects.create(courseName=courseName)
+        if semester is not None:
+            course.semester = semester
         course.save()
         return course
 
@@ -91,7 +93,7 @@ class CourseFeatures:
 
     @staticmethod
 
-    def edit_course(courseKey:int, newCourseName:str=""):
+    def edit_course(courseKey:int, newCourseName:str="", newSemester:str=''):
         if not isinstance(courseKey,int) or not isinstance(newCourseName,str):
             return False
         try:
@@ -109,7 +111,7 @@ class CourseFeatures:
 
     @staticmethod
 
-    def edit_section(sectionKey:int, newSectionTime:str=None):
+    def edit_section(sectionKey:int, newInstructor:str='', newSectionCode:str=''):
         if not isinstance(sectionKey,int):
             return False
         try:
