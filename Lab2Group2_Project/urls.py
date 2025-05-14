@@ -31,5 +31,5 @@ urlpatterns = [
     ),
     path('my_acc_info/', MyAccount.as_view(), name='my_acc_info'),
     path('feedback/', Feedback.as_view(), name='feedback'),
-    path('send_notifs/', SendNotifs.as_view(), name='send_notifs'),
+    path('my_acc_info/', SendNotifs.as_view(), name='send_notifs'),
 ]

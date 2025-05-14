@@ -19,7 +19,7 @@ from TA_Scheduler_App.skills_features import SkillsFeatures
 class Login(View):
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect("my_acc_info")
+            return redirect("dashboard")
         return render(request, "login.html", {})
 
     def post(self, request):
@@ -312,33 +312,20 @@ class MyAccount(View):
         return render(request, "my_acc_info.html", context={"u": acc_info, "is_admin": is_admin})
 
     def post(self, request):
-        mod_keys = {
-            "firstName": "first_name", "lastName": "last_name",
-            "username": "username", "password":"password",
-            "userEmail": "user_email", "phoneNumber": "phone_number",
-            "homeAddress": "home_address"
-        }  # keys are the model variable names, vals are the corresponding arg names for `edit_account()`
-        user_acc = request.user
-        for var, arg_name in mod_keys.items():
-            form_return = request.POST.get(var)
-            if form_return != getattr(User.objects.get(pk=user_acc.pk), var):
-                if var == "phoneNumber":
-                    AccountFeatures.edit_account(user_acc.pk, phone_number=form_return)
-                else:
-                    exec(f'AccountFeatures.edit_account({user_acc.pk}, {arg_name}="{form_return}")')
-        return redirect("my_acc_info")
+        pass
+
 
 class Feedback(View):
     def get(self, request):
-        return render(request, "feedback.html", context={})
+        pass
 
     def post(self, request):
-        return redirect("feedback")
+        pass
 
 
 class SendNotifs(View):
     def get(self, request):
-        return render(request, "send_notifs.html", context={})
+        pass
 
     def post(self, request):
-        return redirect("send_notifs")
+        pass

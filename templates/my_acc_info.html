@@ -6,38 +6,21 @@
     <title>My Account Info; UWM TA Scheduling Tool</title>
     <link rel="stylesheet" href="{% static 'stylesheets/common_style.css' %}">
     <style>
-        .info-container {
-            max-width: 600px;
-            display: grid;
-            grid-template: "label .u_info";
-            justify-content: space-between;
-        }
-        .u_info {
-            grid-column: 2 / span 3;
-            align-self: center;
-        }
-        label {
-            margin-bottom: 10px;
-            align-self: center;
-            grid-column: 1;
-        }
+
     </style>
     <script>
         function edit_name() {
             {% if is_admin %}
-            document.getElementById("name").innerHTML = "<h3>" +
-                "<input type='text' name='firstName' value='{{ u.firstName }}' placeholder='{{ u.firstName }}'/>" +
-                "<input type='text' name='lastName' value='{{ u.lastName }}' placeholder='{{ u.lastName }}'/>" +
-                "</h3>";
+            document.getElementById("name").innerHTML = "" +
+                "<input type='text' name='firstname' value='{{ u.firstName }}' placeholder='{{ u.firstName }}'/>" +
+                "<input type='text' name='lastname' value='{{ u.lastName }}' placeholder='{{ u.lastName }}'/>";
             {% endif %}
         }
         document.getElementById("nameClick").addEventListener('click', edit_name);
     </script>
 </head>
 <body>
-    <header>
-        <img src="{% static 'images/UWM_TA_sched_logo.png' %}" alt="UWM Logo">
-    </header>
+    <img alt="UWM TA Scheduler Tool Logo" src="{% static 'images/UWM_TA_sched_logo.png' %}" />
     <nav>
         <a href="{% url 'courses' %}">Courses</a>
         <a href="{% url 'send_notifs' %}">Send Notifications</a>
@@ -49,31 +32,31 @@
     <main>
         <form method="post" action="{% url 'my_acc_info' %}">
             {% csrf_token %}
+            <div>
                 <div id="name">
-                    <input type="hidden" name="firstName" value="{{ u.firstName }}"/>
-                    <input type="hidden" name="lastName" value="{{ u.lastName }}"/>
+                    <input type="hidden" name="firstname" value="{{ u.firstName }}"/>
+                    <input type="hidden" name="lastname" value="{{ u.lastName }}"/>
                     <h3 id="nameClick" onclick="edit_name()">{{ u.firstName }} {{ u.lastName }}</h3>
                 </div><br/>
-            <div class="info-container">
                 <label for="username">Username:</label>
-                <input class="u_info" type="text" id="username" name="username" value="{{ u.username }}"
+                <input type="text" id="username" name="username" value="{{ u.username }}"
                        {% if not is_admin %}disabled{% endif %}
                 /><br/>
-                <label>Role:</label>
-                <div class="u_info">{% if u.accountType == 0 %}TA{% elif u.accountType == 1 %}Instructor{% else %}Admin{% endif %}</div>
-                <br/>
+                <label>Role:
+                {% if u.accountType == 0 %}TA{% elif u.accountType == 1 %}Instructor{% else %}Admin{% endif %}
+                </label><br/>
                 <label for="password">Password:</label>
-                <input class="u_info" type="password" id="password" name="password" value="{{ u.password }}"
+                <input type="password" id="password" name="password" value="{{ u.password }}"
                        {% if not is_admin %}disabled{% endif %}
                 /><br/>
                 <label for="email">Email:</label>
-                <input class="u_info" type="email" name="userEmail" id="email" value="{{ u.userEmail }}"/><br/>
+                <input type="email" name="userEmail" id="email" value="{{ u.userEmail }}"/><br/>
                 <label for="phone">Phone #:</label>
-                <input class="u_info" type="text" name="phoneNumber" id="phone" value="{{ u.phoneNumber }}"><br/>
+                <input type="text" name="phoneNumber" id="phone" value="{{ u.phoneNumber }}"><br/>
                 <label for="address">Mailing Address:</label>
-                <input class="u_info" type="text" name="homeAddress" id="address" value="{{ u.homeAddress }}"><br/>
+                <input type="text" name="homeAddress" id="address" value="{{ u.homeAddress }}"><br/>
                 <label for="skills">Skill Set:</label>
-                <textarea class="u_info" id="skills">Skills go here</textarea><br/>
+                <textarea id="skills">Skills go here</textarea><br/>
             </div>
             <button>save</button>
         </form>
