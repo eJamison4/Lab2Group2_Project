@@ -143,7 +143,7 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Teach")
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 0)
-        self.assertEqual(user.accountType, 0)
+        self.assertEqual(user.accountType, 2)
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "123 Main St")
 
@@ -171,7 +171,7 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Teach")
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 1114449999)  # This is what is checked
-        self.assertEqual(user.accountType, 0)
+        self.assertEqual(user.accountType, 2)
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "123 Main St")
 
@@ -184,7 +184,7 @@ class TestAccountFeatures(TestCase):
             "phoneNumber": 1114449999,
             "firstName": "John",
             "lastName": "Doe",
-            "accountType": 2,
+            "accountType": 0,
             "homeAddress": "123 Main St",
         }
         user = self.service.create_user(
@@ -200,7 +200,7 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Teach")
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 0)
-        self.assertEqual(user.accountType, 2)  # This is what is checked
+        self.assertEqual(user.accountType, 0)  # This is what is checked
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "123 Main St")
 
@@ -229,7 +229,7 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Teach")
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 1114449999)
-        self.assertEqual(user.accountType, 0)
+        self.assertEqual(user.accountType, 2)
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "123 Main St")
 
@@ -260,7 +260,7 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Teach")
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 1114449999)
-        self.assertEqual(user.accountType, 0)
+        self.assertEqual(user.accountType, 2)
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "123 Main St")
 
@@ -279,7 +279,7 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Edited")  # Changed
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 2223337777)  # Changed
-        self.assertEqual(user.accountType, 0)
+        self.assertEqual(user.accountType, 2)
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "fake address")  # Changed
 
@@ -321,7 +321,7 @@ class TestAccountFeatures(TestCase):
             data2["lastName"],
             data2["homeAddress"],
             phone_number=data2["phoneNumber"],
-            account_type=2,
+            account_type=0,
         )
         # Count should be 2 accounts at this point
         self.assertEqual(User.objects.count(), 2)
@@ -330,14 +330,14 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Teach")
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 1114449999)
-        self.assertEqual(user.accountType, 0)
+        self.assertEqual(user.accountType, 2)
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "123 Main St")
 
         self.assertEqual(user2.username, "Coach")
         self.assertEqual(user2.check_password("123word"), True)
         self.assertEqual(user2.phoneNumber, 3335550000)
-        self.assertEqual(user2.accountType, 2)
+        self.assertEqual(user2.accountType, 0)
         self.assertEqual(user2.lastName, "Someone")
         self.assertEqual(user2.homeAddress, "789 Test Dr")
 
