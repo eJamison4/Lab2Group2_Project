@@ -253,6 +253,12 @@ class Courses(View):
 
     def post(self, request):
 
+        userType = request.user.accountType
+        if userType < 2:
+            requestStuff = request.POST.copy()
+            requestStuff.update({'errorCode':'User is not an admin and has no edit permissions'})
+            return render(request,template_name='courses.html',context=requestStuff,status=403)
+
         action = request.POST.get("action")
 
         if action == 'create':
