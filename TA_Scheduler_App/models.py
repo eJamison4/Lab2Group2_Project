@@ -24,7 +24,7 @@ class User(AbstractUser):
 class Course(models.Model):
     objects = None
     courseName = models.CharField(max_length=256)
-    semester = models.CharField(max_length=256)
+    semester = models.CharField(max_length=256, default='Spring 2025')
 
     def __str__(self):
         return self.courseName
@@ -34,7 +34,7 @@ class Section(models.Model):
     # not sure how to format the times
     # startTime, endTime, daysOfWeek?
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="section_set")
-    sectionCode = models.CharField(max_length=20)  # must be exactly sectionCode
+    sectionCode = models.CharField(max_length=20)  # must be exactly sectionCode #why would we need this? just use the PK
     instructor = models.CharField(max_length=256, blank=True)
 
 

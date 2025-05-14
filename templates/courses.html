@@ -74,11 +74,13 @@
         <a href="{% url 'my_acc_info' %}">My Account Info</a>
     </nav>
     <main>
+        <p>{{ errorCode }}</p>
         <h2>Courses</h2>
         <div id="course-form">
             <form method="post">
                 {% csrf_token %}
                 <input type="text" name="courseName" placeholder="New course name" required>
+                <input name="action" value="create" type="hidden">
                 <button type="submit">Add Course</button>
             </form>
         </div>
