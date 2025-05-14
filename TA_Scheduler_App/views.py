@@ -252,9 +252,25 @@ class Courses(View):
         return render(request, "courses.html", {"courses": courses})
 
     def post(self, request):
-        name = request.POST.get("courseName")
-        if name:
-            CourseFeatures.create_course(courseName=name)
+
+        action = request.POST.get("action")
+
+        if action == 'create':
+            name = request.POST.get("courseName")
+            if name:
+                CourseFeatures.create_course(courseName=name)
+
+        if action == 'edit':
+            courseID = int(request.POST.get("courseId"))
+            newCourseName = request.POST.get("newCourseName")
+            if courseID:
+                CourseFeatures.edit_course(courseKey=courseID, newCourseName=newCourseName)
+
+        if action == 'delete':
+            courseID = int(request.POST.get("courseId"))
+            if courseID:
+                CourseFeatures.delete_course(courseKey=courseID)
+
         return redirect("courses")
 
 
