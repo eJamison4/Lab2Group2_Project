@@ -119,7 +119,13 @@
                             <form method="post" action="{% url 'add-section' forloop.counter %}">
                                 {% csrf_token %}
                                 <input type="text" name="sectionCode" placeholder="Section #" required>
-                                <input type="text" name="instructor" placeholder="Instructor">
+
+                                <select name = 'instructor' required>
+                                    {% for user in usersAvailable %}
+                                        <option value={{ user.pk }}>{{ user.firstName }} {{ user.lastName }}</option>
+                                    {% endfor %}
+                                </select>
+{#                                <input type="text" name="instructor" placeholder="Instructor">#}
                                 <button type="submit">Add</button>
                             </form>
                         </details>
