@@ -79,6 +79,11 @@
         <a href="{% url 'feedback' %}">Feedback</a>
         <div class="right"></div>
         <a href="{% url 'my_acc_info' %}">My Account Info</a>
+        <form method="post">
+            {% csrf_token %}
+            <button>Logout</button>
+            <input name="action" value="logout" type="hidden">
+        </form>
     </nav>
     <main>
         <h2>Accounts</h2>

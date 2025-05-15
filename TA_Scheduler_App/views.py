@@ -260,6 +260,10 @@ class Courses(View):
 
         action = request.POST.get("action")
 
+        if action == "logout":
+            logout(request)
+            return redirect("login")
+
         if action == 'create':
             name = request.POST.get("courseName")
             if name:
@@ -314,6 +318,11 @@ class Skills(View):
 
     def post(self, request, skillId=None, skillString=None):
         action = request.POST.get("action")
+
+        if action == "logout":
+            logout(request)
+            return redirect("login")
+
         if action == "create":
             if skillString is not None:
                 SkillsFeatures.create_skill(request.user, skillString)
@@ -334,21 +343,28 @@ class MyAccount(View):
         return render(request, "my_acc_info.html", context={"u": acc_info, "is_admin": is_admin})
 
     def post(self, request):
-        mod_keys = {
-            "firstName": "first_name", "lastName": "last_name",
-            "username": "username", "password":"password",
-            "userEmail": "user_email", "phoneNumber": "phone_number",
-            "homeAddress": "home_address"
-        }  # keys are the model variable names, vals are the corresponding arg names for `edit_account()`
-        user_acc = request.user
-        for var, arg_name in mod_keys.items():
-            form_return = request.POST.get(var)
-            if form_return != getattr(User.objects.get(pk=user_acc.pk), var):
-                if var == "phoneNumber":
-                    AccountFeatures.edit_account(user_acc.pk, phone_number=form_return)
-                else:
-                    exec(f'AccountFeatures.edit_account({user_acc.pk}, {arg_name}="{form_return}")')
-        return redirect("my_acc_info")
+        action = request.POST.get("action")
+
+        if action == "logout":
+            logout(request)
+            return redirect("login")
+        else:
+            mod_keys = {
+                "firstName": "first_name", "lastName": "last_name",
+                "username": "username", "password":"password",
+                "userEmail": "user_email", "phoneNumber": "phone_number",
+                "homeAddress": "home_address"
+            }  # keys are the model variable names, vals are the corresponding arg names for `edit_account()`
+            user_acc = request.user
+            for var, arg_name in mod_keys.items():
+                form_return = request.POST.get(var)
+                if form_return and form_return != getattr(User.objects.get(pk=user_acc.pk), var):
+                    if form_return is not None and var == "phoneNumber":
+                        print(f"'{form_return}' and var = {var}")
+                        AccountFeatures.edit_account(user_acc.pk, phone_number=int(form_return))
+                    else:
+                        exec(f'AccountFeatures.edit_account({user_acc.pk}, {arg_name}="{form_return}")')
+            return redirect("my_acc_info")
 
 class Feedback(View):
     def get(self, request):
