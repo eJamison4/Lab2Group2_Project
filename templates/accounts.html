@@ -150,6 +150,16 @@
           <h3>{{ u.firstName }} {{ u.lastName }}</h3>
           <p><strong>Email:</strong> {{ u.userEmail }}</p>
           <p><strong>Username:</strong> {{ u.username }}</p>
+            <p><strong>Skills:</strong>
+                {% if u.skills_set.exists %}
+                    {% for s in u.skills_set.all %}
+                        {{ s.skill }}{%  if not forloop.last %}, {% endif %}
+                    {% endfor %}
+
+                {% else %}
+                    None
+                {% endif %}
+            </p>
         {% if is_admin %}
           <p><strong>Phone #:</strong> {{ u.phoneNumber|default:"N/A" }}</p>
           <p><strong>Address:</strong> {{ u.homeAddress|default:"N/A" }}</p>

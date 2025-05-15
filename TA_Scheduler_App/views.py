@@ -54,7 +54,7 @@ class Account(LoginRequiredMixin, View):
     template_name = "accounts.html"
 
     def get(self, request):
-        users = User.objects.all().order_by("id")
+        users = User.objects.prefetch_related("skills_set").order_by("id")
         is_admin = request.user.is_authenticated and getattr(request.user, "accountType", 0) == 2
         return render(request, self.template_name, {"users": users, "is_admin": is_admin})
 
@@ -350,6 +350,7 @@ class MyAccount(View):
 
     def post(self, request):
         action = request.POST.get("action")
+        skill = request.POST.get("skill")
 
         if action == "logout":
             logout(request)
@@ -373,6 +374,9 @@ class MyAccount(View):
                             print(f"User attempted a phonenumber change that couldn't be converted to an int '{form_return}'...")
                     else:
                         exec(f'AccountFeatures.edit_account({user_acc.pk}, {arg_name}="{form_return}")')
+
+            if skill is not None:
+                SkillsFeatures.create_skill(user_acc, skill)
             return redirect("my_acc_info")
 
 class Feedback(View):
