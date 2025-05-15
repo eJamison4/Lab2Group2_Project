@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Feedback; UWM TA Scheduling Tool</title>
+    <link rel="stylesheet" href="{% static 'stylesheets/common_style.css' %}" />
+    <style></style>
+</head>
+<body>
+    <header>
+        <img alt="UWM TA Scheduler Tool Logo" src="{% static 'images/UWM_TA_sched_logo.png' %}" />
+    </header>
+    <nav>
+        <a href="{% url 'courses' %}">Courses</a>
+        <a href="{% url 'send_notifs' %}">Send Notifications</a>
+        <a href="{% url 'accounts' %}">Accounts</a>
+        <a href="{% url 'feedback' %}" class="active">Feedback</a>
+        <div class="right"></div>
+        <a href="{% url 'my_acc_info' %}">My Account Info</a>
+    </nav>
+    <div style="height: 200px; background-color: darkcyan; margin: 40px">
+        Placeholder
+    </div>
+</body>
+</html>
