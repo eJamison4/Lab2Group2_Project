@@ -43,7 +43,7 @@ class LabSectionAcceptanceTests(TestCase):
 
         response = self.client.post(f"/courses/{self.course.id}/add-section/", {
             "sectionCode": "301",
-            "instructor": f"{self.ta.firstName} {self.ta.lastName}"
+            "instructor": f"{self.instructor.pk}"
         })
 
         self.assertEqual(response.status_code, 302)  # redirect on success
@@ -70,7 +70,7 @@ class LabSectionAcceptanceTests(TestCase):
 
         response = self.client.post(f"/courses/{self.course.id}/add-section/", {
             "sectionCode": "302",
-            "instructor": f"{self.ta.firstName} {self.ta.lastName}"
+            "instructor": f"{self.ta.pk}"
         })
 
         self.assertNotEqual(response.status_code, 302)
@@ -81,7 +81,7 @@ class LabSectionAcceptanceTests(TestCase):
 
         response = self.client.post(f"/courses/{self.course.id}/add-section/", {
             "sectionCode": "303",
-            "instructor": f"{self.ta.firstName} {self.ta.lastName}"
+            "instructor": f"{self.ta.pk}"
         })
 
         self.assertNotEqual(response.status_code, 302)

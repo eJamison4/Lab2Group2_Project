@@ -248,8 +248,10 @@ class Courses(View):
         courses = Course.objects.all()
         # prefetch sections so the template can loop efficiently
         courses = Course.objects.prefetch_related("section_set").all()
+        usersAvailable = User.objects.all().exclude(accountType=2)
         print("COURSES:", courses)
-        return render(request, "courses.html", {"courses": courses})
+        print("USERS:", usersAvailable)
+        return render(request, "courses.html", {"courses": courses,'usersAvailable': usersAvailable})
 
     def post(self, request):
 
@@ -284,9 +286,12 @@ class AddSection(View):
     def post(self, request, course_id):
         course = get_object_or_404(Course, pk=course_id)
         code = request.POST.get("sectionCode")
-        instructor = request.POST.get("instructor")
+        instructor = int(request.POST.get("instructor"))
+        userA = User.objects.get(pk=instructor)
+
         if code:
-            Section.objects.create(course=course, sectionCode=code, instructor=instructor or "")
+            s = Section.objects.create(course=course, sectionCode=code, instructor=userA.firstName+' '+userA.lastName or "")
+            a = assignment_features.create_assignment(self=self,inSection=s,inUser=userA)
         return redirect("courses")
 
 
