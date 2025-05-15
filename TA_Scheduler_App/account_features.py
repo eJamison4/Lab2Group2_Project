@@ -1,67 +1,70 @@
 from TA_Scheduler_App.models import User
-#file depends on the models provided by models.py
-#AccountFeatures works with the User model provided in the file
 
 
-#This class features functions that create new accounts,
-# deletes existing accounts via userID, and edits any account information
 class AccountFeatures:
-
-    #Function that creates account.  Takes in the necessary data to create account.
-    #Each account is required to have a username, password, email, first name, last name, and home address to start
-    #Account Type and phone number can be left blank and default to 0
     @staticmethod
-    def create_user(username : str, password : str, user_email: str,
-                    first_name: str, last_name: str, home_address: str = "", account_type: int= 0, phone_number: int =0):
-        #Account creation happens here
-        user = User.objects.create_user(username=username,
-                                   password=password, userEmail=user_email,
-                                   phoneNumber=phone_number, firstName=first_name,
-                                   lastName=last_name, homeAddress = home_address, accountType=account_type)
-        #new account is returned
+    def create_user(
+        username: str, password: str,
+        user_email: str, first_name: str, last_name: str,
+        home_address="", account_type=2, phone_number=0,
+    ):
+        """
+        Each account is required to have a username, password, email, first name, last name, and home address to start
+        Account Type and phone number can be left blank and default to 0. `account_type=0` means the account will have TA perms.
+        """
+        user = User.objects.create_user(
+            username=username, password=password,
+            userEmail=user_email, phoneNumber=phone_number,
+            firstName=first_name, lastName=last_name,
+            homeAddress=home_address, accountType=account_type,
+        )
+        # new account is returned
         return user
 
-    #Function that deletes an existing account.  The user id of the account has to be used to find the account
-    #The user id is the primary key of the User object
     @staticmethod
-    def  delete_account(user_id):
-        #The function either returns true if the account is found and deleted
-        #If the account does not exist, it returns false
+    def delete_account(user_id):
+        """
+        The user id is the primary key of the User object.
+        `delete_account()` returns `True` if the account is found and deleted, returning `False` otherwise
+        """
         try:
             user = User.objects.get(pk=user_id)
             user.delete()
             return True
-        #Error check if the account does not exist, likely not needed
+        # Error check if the account does not exist, likely not needed
         except User.DoesNotExist:
             return False
 
-    #edits an existing account, allowing any amount of user fields to be changed at a time.
-    #Every parameter for this function is entirely optional
-    #The function returns the updated user account
-    #user_id should be a primary key
-    #When calling this function, it is recommended to specify the parameter being passed
-    # ex: edit_account(username='some fake name')
     @staticmethod
-    def edit_account(user_id, username: str ="", password: str ="", user_email: str="",
-                     phone_number: int =None, first_name: str="", last_name: str ="", account_type: int =None
-                     , home_address: str = ""):
-
+    def edit_account(
+        user_id, username="", password="",
+        user_email="", phone_number: int = None,
+        first_name="", last_name="",
+        account_type: int = None, home_address="",
+    ):
+        """
+        Allows any amount of user fields to be changed at a time.
+        Every parameter except `user_id` is optional.
+        returns the updated user account.
+        `user_id` should be a primary key.
+        When calling `edit_account()`, it is recommended to pass arguments as KWARGS
+        ex: `edit_account(username='<some_name>')`
+        """
         try:
-            #The primary key for the account is used to retrieve the appropriate account
-            user = User.objects.get(pk = user_id)
+            # The primary key for the account is used to retrieve the appropriate account
+            user = User.objects.get(pk=user_id)
 
             print("\n--- BEFORE CHANGES ---")
             print(f"Username: {user.username}")
             print(f"Email: {user.userEmail}")
             print(f"Account Type: {user.accountType}")
 
-            #This chain of if statements check which fields is desired to change
-            #For example, if no new username is given,
-            # it skips that field and focuses on other fields that need to be changed
+            # Checks which fields is desired to change
+            # skipping each parameter that wasn't passed
             if username != "":
                 user.username = username
             if password != "":
-                user.password = password
+                user.set_password(password)
             if user_email != "":
                 user.userEmail = user_email
             if phone_number is not None:
@@ -75,7 +78,6 @@ class AccountFeatures:
             if home_address != "":
                 user.homeAddress = home_address
 
-            #saves the current user instance
             user.save()
 
             print("\n--- AFTER CHANGES ---")
@@ -83,6 +85,6 @@ class AccountFeatures:
             print(f"Email: {user.userEmail}")
             print(f"Account Type: {user.accountType}\n")
             return user.pk
-        #Error check if the account does not exist, likely not needed
+        # Error check if the account does not exist, likely not needed
         except User.DoesNotExist:
             return None

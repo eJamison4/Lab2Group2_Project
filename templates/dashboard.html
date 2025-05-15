@@ -1,106 +1,37 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>TA Scheduling Tool</title>
-
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: white;
-    }
-
-    header {
-      display: flex;
-      align-items: flex-end;
-      background: white;
-        padding: 10px 20px;
-    }
-    header img {
-      height: 100px;
-    }
-
-
-    nav {
-      display: flex;
-      align-items: center;
-      height: 32px;
-      padding: 10px;
-      background: #c4c4c4;
-      font-size: 14px;
-    }
-    nav a {
-      color: #0000ee;
-      text-decoration: none;
-      margin-right: 18px;
-      line-height: 32px;
-
-    }
-    nav a:hover { text-decoration: underline; }
-
-    nav a.active {
-      background: lightgray;
-        border: 1px solid darkgray;
-        padding: 6px 12px;
-      border-radius: 4px 4px 4px 4px;
-      font-weight: 600;
-      color: black;
-    }
-
-    nav .right {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-    }
-    nav .right span.icon {
-      font-size: 18px;
-      font-weight: bold;
-      margin-left: 6px;
-      cursor: pointer;
-    }
-
-    main {
-      padding: 10px 14px;
-    }
-    h2 {
-      margin: 0 0 6px 0;
-      font-size: 15px;
-      font-weight: 700;
-    }
-    #notifications {
-      border: 1px solid black;
-      width: 100%;
-      height: 300px;
-      background: white;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>TA Scheduling Tool</title>
+    <link rel="stylesheet" href="{% static 'stylesheets/common_style.css' %}">
+    <style>
+        #notifications {
+            border: 1px solid black;
+            width: 100%;
+            height: 300px;
+            background: white;
+        }
+    </style>
 </head>
 <body>
-
-  <header>
-    <img src="../static/images/UWM_TA_sched_logo.png" alt="UWM Logo">
-  </header>
-
-  <nav>
-    <a href="#" class="active">Dashboard</a>
-    <a href={% url "courses" %}>Courses</a>
-    <a href="#">Send Notifications</a>
-
-    <a href={% url "accounts" %}>Accounts</a>
-
-    <a href="#">Feedback</a>
-
-    <div class="right">
-      <a href="#">My Account Info</a>
-      <span class="icon">&#x2753;</span>
-    </div>
-  </nav>
-
-  <main>
-    <h2>Incoming Notifications</h2>
-    <div id="notifications"></div>
-  </main>
-
+    <header>
+        <img src="../static/images/UWM_TA_sched_logo.png" alt="UWM Logo">
+    </header>
+    <nav>
+        <a href="#" class="active">Dashboard</a>
+        <a href={% url "courses" %}>Courses</a>
+        <a href="#">Send Notifications</a>
+        <a href={% url "accounts" %}>Accounts</a>
+        <a href="#">Feedback</a>
+        <div class="right">
+            <a href="#">My Account Info</a>
+        </div>
+    </nav>
+    <main>
+        <h2>Incoming Notifications</h2>
+        <div id="notifications"></div>
+    </main>
 </body>
 </html>

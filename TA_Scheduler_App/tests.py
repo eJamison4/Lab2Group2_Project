@@ -4,28 +4,29 @@ from TA_Scheduler_App.models import Section, Course, User
 from TA_Scheduler_App.courseFeatures import CourseFeatures
 from TA_Scheduler_App.account_features import AccountFeatures
 
-# Create your tests here.
-
 
 class TestCourseFeatures(TestCase):
-
     def setUp(self):
         self.service = CourseFeatures()
 
     def testCourseCreation(self):
-        course = self.service.create_course(courseName="yugioh class",semester="Fall 2025",)
+        course = self.service.create_course(courseName="yugioh class")
+        self.assertEqual(course.courseName, "yugioh class")
 
         self.assertEqual(Course.objects.count(), 1)
         self.assertEqual(course.courseName, "yugioh class")
-        self.assertEqual(course.semester, "Fall 2025")
+        self.assertEqual(course.semester, "Spring 2025")
 
     def testSectionCreation(self):
-        course = self.service.create_course(courseName="yugioh class",semester="Fall 2025",)
-        section = self.service.create_section(course, sectionCode= "SEC-001",instructor="")
-        self.assertEqual(Section.objects.count(), 1)
-        self.assertEqual(section.sectionCode, "SEC-001")
-        self.assertEqual(section.course, course)
+        course = self.service.create_course(courseName="yugioh class")
 
+        section = self.service.create_section(course, "time to duel")
+
+        self.assertEqual(section.sectionCode, "time to duel")
+        self.assertEqual(section.course.courseName, "yugioh class")
+        self.assertEqual(Section.objects.count(), 1)
+        self.assertEqual(section.sectionCode, "time to duel")
+        self.assertEqual(section.course, course)
 
     # def testLabCreation(self):
     #     course = self.service.create_course(self, courseName="yugioh class")
@@ -37,16 +38,22 @@ class TestCourseFeatures(TestCase):
     #     self.assertEqual(Lab.objects.count(), 1)
 
     def testCourseDelete(self):
-        course = self.service.create_course( courseName="yugioh class",semester= "Fall 2025")
+        course = self.service.create_course(courseName="yugioh class")
+
         self.assertEqual(Course.objects.count(), 1)
+
         self.service.delete_course(courseKey=course.pk)
+
         self.assertEqual(Course.objects.count(), 0)
 
     def testSectionDelete(self):
-        course = self.service.create_course(courseName="yugioh class",semester= "Fall 2025")
-        section = self.service.create_section( course, "SEC-001")
+        course = self.service.create_course(courseName="yugioh class")
+
+        section = self.service.create_section(course, "time to duel")
+
         self.assertEqual(Section.objects.count(), 1)
-        self.service.delete_section( sectionKey=section.pk)
+
+        self.service.delete_section(sectionKey=section.pk)
         self.assertEqual(Section.objects.count(), 0)
 
     # def testLabDelete(self):
@@ -61,30 +68,34 @@ class TestCourseFeatures(TestCase):
     #     self.assertEqual(Lab.objects.count(), 0)
 
     def testCourseUpdateNoArgument(self):
-        course = self.service.create_course(courseName="yugioh class",semester = "Fall 2025")
-        edit = self.service.edit_course(courseKey=course.pk)
-        self.assertEqual(edit.courseName, "yugioh class")
-        self.assertEqual(edit.semester, "Fall 2025")
+        course = self.service.create_course(courseName="yugioh class")
+        course = self.service.edit_course(courseKey=course.pk)
+
+        self.assertNotEqual(course.courseName, "")
 
     def testCourseUpdate(self):
-        course = self.service.create_course(courseName="yugioh class",semester = "Fall 2025")
-        edited = self.service.edit_course(courseKey=course.pk,newCourseName="MTG class",)
-        self.assertEqual(edited.courseName, "MTG class")
+        course = self.service.create_course(courseName="yugioh class")
+
+        course = self.service.edit_course(courseKey=course.pk, newCourseName="MTG class")
+
+        self.assertEqual(course.courseName, "MTG class")
 
     def testSectionUpdate(self):
-        course = self.service.create_course(courseName="yugioh class",semester= "Fall 2025")
-        section = self.service.create_section(course, "SEC-001",instructor="")
+        course = self.service.create_course(courseName="yugioh class")
+        section = self.service.create_section(course, "time to duel")
 
-        edit = self.service.edit_section(sectionKey=section.pk, newSectionCode="SEC-002",newInstructor= "J-Rock")
+        section = self.service.edit_section(sectionKey=section.pk, newInstructor='J-Rock', newSectionCode='1234')
 
-        self.assertEqual(edit.sectionCode, "SEC-002")
-        self.assertEqual(edit.instructor, "J-Rock")
+        self.assertEqual(section.sectionCode, "1234")
+        self.assertEqual(section.instructor, 'J-Rock')
 
     def testSectionUpdateNoArgument(self):
-        course = self.service.create_course(courseName="yugioh class",semester = "Fall 2025")
-        section = self.service.create_section(course, "SEC-001",instructor="")
-        edit = self.service.edit_section(sectionKey=section.pk,newSectionCode="",newInstructor= "")
-        self.assertNotEqual(edit.sectionCode, "")
+        course = self.service.create_course(courseName="yugioh class")
+        section = self.service.create_section(course, "time to duel")
+
+        section = self.service.edit_section(sectionKey=section.pk)
+
+        self.assertNotEqual(section.sectionCode, "")
 
     # def testLabUpdate(self):
     #     course = self.service.create_course(self, courseName="yugioh class")
@@ -132,7 +143,7 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Teach")
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 0)
-        self.assertEqual(user.accountType, 0)
+        self.assertEqual(user.accountType, 2)
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "123 Main St")
 
@@ -160,7 +171,7 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Teach")
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 1114449999)  # This is what is checked
-        self.assertEqual(user.accountType, 0)
+        self.assertEqual(user.accountType, 2)
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "123 Main St")
 
@@ -173,7 +184,7 @@ class TestAccountFeatures(TestCase):
             "phoneNumber": 1114449999,
             "firstName": "John",
             "lastName": "Doe",
-            "accountType": 2,
+            "accountType": 0,
             "homeAddress": "123 Main St",
         }
         user = self.service.create_user(
@@ -189,7 +200,7 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Teach")
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 0)
-        self.assertEqual(user.accountType, 2)  # This is what is checked
+        self.assertEqual(user.accountType, 0)  # This is what is checked
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "123 Main St")
 
@@ -218,7 +229,7 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Teach")
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 1114449999)
-        self.assertEqual(user.accountType, 0)
+        self.assertEqual(user.accountType, 2)
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "123 Main St")
 
@@ -249,7 +260,7 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Teach")
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 1114449999)
-        self.assertEqual(user.accountType, 0)
+        self.assertEqual(user.accountType, 2)
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "123 Main St")
 
@@ -268,7 +279,7 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Edited")  # Changed
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 2223337777)  # Changed
-        self.assertEqual(user.accountType, 0)
+        self.assertEqual(user.accountType, 2)
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "fake address")  # Changed
 
@@ -310,7 +321,7 @@ class TestAccountFeatures(TestCase):
             data2["lastName"],
             data2["homeAddress"],
             phone_number=data2["phoneNumber"],
-            account_type=2,
+            account_type=0,
         )
         # Count should be 2 accounts at this point
         self.assertEqual(User.objects.count(), 2)
@@ -319,14 +330,14 @@ class TestAccountFeatures(TestCase):
         self.assertEqual(user.username, "Teach")
         self.assertEqual(user.check_password("pass123"), True)
         self.assertEqual(user.phoneNumber, 1114449999)
-        self.assertEqual(user.accountType, 0)
+        self.assertEqual(user.accountType, 2)
         self.assertEqual(user.lastName, "Doe")
         self.assertEqual(user.homeAddress, "123 Main St")
 
         self.assertEqual(user2.username, "Coach")
         self.assertEqual(user2.check_password("123word"), True)
         self.assertEqual(user2.phoneNumber, 3335550000)
-        self.assertEqual(user2.accountType, 2)
+        self.assertEqual(user2.accountType, 0)
         self.assertEqual(user2.lastName, "Someone")
         self.assertEqual(user2.homeAddress, "789 Test Dr")
 
