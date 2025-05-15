@@ -19,7 +19,7 @@ from TA_Scheduler_App.skills_features import SkillsFeatures
 class Login(View):
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect("dashboard")
+            return redirect("my_acc_info")
         return render(request, "login.html", {})
 
     def post(self, request):
@@ -35,7 +35,7 @@ class Login(View):
         print(password)
         if user is not None:
             login(request, user)
-            return render(request, "dashboard.html", context={"username": username})
+            return render(request, "my_acc_info.html", context={"username": username})
 
         return render(request, "login.html", {"message": "Either username or password is incorrect!"})
         # return redirect()
@@ -263,6 +263,10 @@ class Courses(View):
 
         action = request.POST.get("action")
 
+        if action == "logout":
+            logout(request)
+            return redirect("login")
+
         if action == 'create':
             name = request.POST.get("courseName")
             if name:
@@ -320,6 +324,11 @@ class Skills(View):
 
     def post(self, request, skillId=None, skillString=None):
         action = request.POST.get("action")
+
+        if action == "logout":
+            logout(request)
+            return redirect("login")
+
         if action == "create":
             if skillString is not None:
                 SkillsFeatures.create_skill(request.user, skillString)
@@ -333,9 +342,50 @@ class Skills(View):
                 SkillsFeatures.delete_skill(skillId)
 
 
-class myAccount(View):
+class MyAccount(View):
     def get(self, request):
-        pass
+        acc_info = request.user
+        is_admin = request.user.is_authenticated and getattr(request.user, "accountType", 0) == 2
+        return render(request, "my_acc_info.html", context={"u": acc_info, "is_admin": is_admin})
 
     def post(self, request):
-        pass
+        action = request.POST.get("action")
+
+        if action == "logout":
+            logout(request)
+            return redirect("login")
+        else:
+            mod_keys = {
+                "firstName": "first_name", "lastName": "last_name",
+                "username": "username", "password":"password",
+                "userEmail": "user_email", "phoneNumber": "phone_number",
+                "homeAddress": "home_address"
+            }  # keys are the model variable names, vals are the corresponding arg names for `edit_account()`
+            user_acc = request.user
+            for var, arg_name in mod_keys.items():
+                form_return = request.POST.get(var)
+                if form_return and form_return != getattr(User.objects.get(pk=user_acc.pk), var):
+                    if form_return is not None and var == "phoneNumber":
+                        print(f"'{form_return}' and var = {var}")
+                        try:
+                            AccountFeatures.edit_account(user_acc.pk, phone_number=int(form_return))
+                        except ValueError:
+                            print(f"User attempted a phonenumber change that couldn't be converted to an int '{form_return}'...")
+                    else:
+                        exec(f'AccountFeatures.edit_account({user_acc.pk}, {arg_name}="{form_return}")')
+            return redirect("my_acc_info")
+
+class Feedback(View):
+    def get(self, request):
+        return render(request, "feedback.html", context={})
+
+    def post(self, request):
+        return redirect("feedback")
+
+
+class SendNotifs(View):
+    def get(self, request):
+        return render(request, "send_notifs.html", context={})
+
+    def post(self, request):
+        return redirect("send_notifs")

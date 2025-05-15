@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from TA_Scheduler_App.views import Login, Account, Dashboard, Courses, AddSection
+from TA_Scheduler_App.views import Login, Account, Dashboard, Courses, AddSection, MyAccount, Feedback, SendNotifs
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -29,4 +29,7 @@ urlpatterns = [
         AddSection.as_view(),
         name="add-section",
     ),
+    path('my_acc_info/', MyAccount.as_view(), name='my_acc_info'),
+    path('feedback/', Feedback.as_view(), name='feedback'),
+    path('send_notifs/', SendNotifs.as_view(), name='send_notifs'),
 ]

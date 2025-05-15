@@ -1,4 +1,5 @@
-from TA_Scheduler_App.models import Section,Course
+from TA_Scheduler_App.models import Section, Course
+
 
 class CourseFeatures:
     """
@@ -15,14 +16,15 @@ class CourseFeatures:
             instructor   = models.CharField(max_length=256, blank=True)
     """
     @staticmethod
+    def create_course(courseName: str, semester: str):
+        if not courseName:
+            raise Exception("no course name provided")
+        if not semester:
+            raise Exception("no semester provided")
 
-    def create_course(courseName:str, semester:str=None):
-        if courseName is None or courseName is '':
-            raise Exception('no')
-
-        a = None
+        a: Course = None
         try:
-            a = Course.objects.get(courseName=courseName)
+            a = Course.objects.get(courseName=courseName, semester=semester)
         except Course.MultipleObjectsReturned:
             raise Exception("something is really wrong")
         except Course.DoesNotExist:
@@ -31,37 +33,24 @@ class CourseFeatures:
         if a is not None:
             return False
 
-        course = Course.objects.create(courseName=courseName)
-        if semester is not None:
-            course.semester = semester
+        course = Course.objects.create(courseName=courseName, semester=semester)
         course.save()
         return course
 
     @staticmethod
-
-    def create_section(courseForeignKey:Course, sectionData:str=None):
-        if courseForeignKey is None:
+    def create_section(courseForeignKey: Course, sectionCode="newSection", instructor=""):
+        if not (courseForeignKey and sectionCode):
             return False
+        if not isinstance(courseForeignKey, Course):
+            raise Exception("not a course")
 
-        if sectionData is None:
-            return False
-
-        if not isinstance(courseForeignKey,Course):
-            raise Exception('not a course')
-
-        section = Section.objects.create(course=courseForeignKey, sectionCode=sectionData)
+        section = Section.objects.create(course=courseForeignKey, sectionCode=sectionCode, instructor=instructor)
         section.save()
 
         return section
 
-    # @staticmethod
-    # def create_lab(courseForeignKey:Course, labData:str):
-    #     lab = Lab.objects.create(courseForeignKey=courseForeignKey, labTime=labData)
-    #     lab.save()
-    #     return lab
-
     @staticmethod
-    def delete_course(courseKey:int):
+    def delete_course(courseKey: int):
         try:
             course = Course.objects.get(pk=courseKey)
             course.delete()
@@ -69,10 +58,9 @@ class CourseFeatures:
         except Course.DoesNotExist:
             return False
 
-
     @staticmethod
-    def delete_section(sectionKey:int):
-        if not isinstance(sectionKey,int):
+    def delete_section(sectionKey: int):
+        if not isinstance(sectionKey, int):
             return False
         try:
             section = Section.objects.get(pk=sectionKey)
@@ -80,21 +68,14 @@ class CourseFeatures:
             return True
         except Section.DoesNotExist:
             return False
-    #
-    # @staticmethod
-    # def delete_lab(labKey:int):
-    #     try:
-    #         lab = Lab.objects.get(pk=labKey)
-    #         lab.delete()
-    #         return True
-    #
-    #     except Lab.DoesNotExist:
-    #         return False
 
     @staticmethod
-
-    def edit_course(courseKey:int, newCourseName:str="", newSemester:str=''):
-        if not isinstance(courseKey,int) or not isinstance(newCourseName,str):
+    def edit_course(courseKey: int, newCourseName="", newSemester=""):
+        if (
+            not isinstance(courseKey, int)
+            or not isinstance(newCourseName, str)
+            or not isinstance(newSemester, str)
+        ):
             return False
         try:
             course = Course.objects.get(pk=courseKey)
@@ -110,34 +91,18 @@ class CourseFeatures:
         return course
 
     @staticmethod
-
-    def edit_section(sectionKey:int, newInstructor:str='', newSectionCode:str=''):
-        if not isinstance(sectionKey,int):
+    def edit_section(sectionKey: int, newSectionCode="", newInstructor=""):
+        if not isinstance(sectionKey, int):
             return False
         try:
             section = Section.objects.get(pk=sectionKey)
         except Section.DoesNotExist:
             return False
 
-        if  newSectionCode.strip():
+        if newSectionCode.strip():
             section.sectionCode = newSectionCode.strip()
             section.save()
         if newInstructor.strip():  # allow blank strings
             section.instructor = newInstructor
             section.save()
         return section
-
-    #
-    # @staticmethod
-    # def edit_lab(labKey:int, newLabTime:str=None):
-    #     try:
-    #         lab = Lab.objects.get(pk=labKey)
-    #     except Lab.DoesNotExist:
-    #         return False
-    #
-    #     if newLabTime is not None and newLabTime is not '' :
-    #         lab.labTime = newLabTime
-    #         lab.save()
-    #
-    #     return lab
-

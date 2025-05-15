@@ -106,15 +106,17 @@
         <img src="../static/images/UWM_TA_sched_logo.png" alt="UWM Logo">
     </header>
     <nav>
-        <a href={% url "dashboard" %}>Dashboard</a>
-        <a href={% url "courses" %}>Courses</a>
-        <a href="#">Send Notifications</a>
-        <a href="#" class="active">Accounts</a>
-        <a href="#">Feedback</a>
-        <div class="right">
-            <a href="#">My Account Info</a>
-            <span class="icon">&#x2753;</span>
-        </div>
+        <a href="{% url 'courses' %}">Courses</a>
+        <a href="{% url 'send_notifs' %}">Send Notifications</a>
+        <a href="{% url 'accounts' %}" class="active">Accounts</a>
+        <a href="{% url 'feedback' %}">Feedback</a>
+        <div class="right"></div>
+        <a href="{% url 'my_acc_info' %}">My Account Info</a>
+        <form method="post">
+            {% csrf_token %}
+            <button>Logout</button>
+            <input name="action" value="logout" type="hidden">
+        </form>
     </nav>
     <main>
         <h2>Accounts</h2>
