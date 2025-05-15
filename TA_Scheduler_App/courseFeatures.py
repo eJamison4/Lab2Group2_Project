@@ -16,7 +16,7 @@ class CourseFeatures:
             instructor   = models.CharField(max_length=256, blank=True)
     """
     @staticmethod
-    def create_course(courseName: str, semester: str):
+    def create_course(courseName: str, semester="Spring 2025"):
         if not courseName:
             raise Exception("no course name provided")
         if not semester:
