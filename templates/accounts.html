@@ -153,7 +153,7 @@
             <p><strong>Skills:</strong>
                 {% if u.skills_set.exists %}
                     {% for s in u.skills_set.all %}
-                        {{ s.skill }}{%  if not forloop.last %}, & ; {% endif %}
+                        {{ s.skill }}{%  if not forloop.last %}, {% endif %}
                     {% endfor %}
 
                 {% else %}
