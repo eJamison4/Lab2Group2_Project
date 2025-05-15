@@ -54,7 +54,7 @@ class Account(LoginRequiredMixin, View):
     template_name = "accounts.html"
 
     def get(self, request):
-        users = User.objects.all().order_by("id")
+        users = User.objects.prefetch_related("skills_set").order_by("id")
         is_admin = request.user.is_authenticated and getattr(request.user, "accountType", 0) == 2
         return render(request, self.template_name, {"users": users, "is_admin": is_admin})
 
