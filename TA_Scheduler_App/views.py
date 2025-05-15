@@ -361,7 +361,10 @@ class MyAccount(View):
                 if form_return and form_return != getattr(User.objects.get(pk=user_acc.pk), var):
                     if form_return is not None and var == "phoneNumber":
                         print(f"'{form_return}' and var = {var}")
-                        AccountFeatures.edit_account(user_acc.pk, phone_number=int(form_return))
+                        try:
+                            AccountFeatures.edit_account(user_acc.pk, phone_number=int(form_return))
+                        except ValueError:
+                            print(f"User attempted a phonenumber change that couldn't be converted to an int '{form_return}'...")
                     else:
                         exec(f'AccountFeatures.edit_account({user_acc.pk}, {arg_name}="{form_return}")')
             return redirect("my_acc_info")
